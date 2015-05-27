@@ -36,8 +36,7 @@ var TEMPLATES         = {
  * @type {Object}
  */
 var defaults = {
-	baseUrl       : './',
-	externalStyle : 'sprite.css',
+	externalStyle : false,
 	spritePath    : null,
 	spriteName    : 'sprite.png',
 	filterBy      : [],
@@ -175,12 +174,8 @@ function getImages(css, opts) {
 					image.ratio  = getRetinaRatio(image.url);
 				}
 
-				if (image.url.charAt(0) === '/') {
-					// The path is relative
-					image.path = path.resolve(opts.baseUrl + image.url);
-				} else {
-					image.path = path.resolve(styleFilePath.substring(0, styleFilePath.lastIndexOf(path.sep)), image.url);
-				}
+				// Get the path to the image.
+				image.path = path.resolve(styleFilePath.substring(0, styleFilePath.lastIndexOf(path.sep)), image.url);
 
 				// Extract the selector for usage in
 				// the external stylesheet.
@@ -453,6 +448,10 @@ function updateReferences(images, opts, sprites, css) {
 			// Manipulate only token comments
 			if (isToken(comment)) {
 				image = lodash.find(images, { url: comment.text });
+
+				// Fix path to the sprite
+				image.spriteRef = path.relative(path.dirname(css.source.input.file), image.spritePath);
+				image.spriteRef = path.posix.normalize(image.spriteRef);
 
 				if (image) {
 					backgroundImage = postcss.decl({
@@ -756,7 +755,7 @@ function isToken(comment) {
  * @return {String}
  */
 function getBackgroundImageUrl(image) {
-	var template = lodash.template('url(<%= image.spritePath %>)');
+	var template = lodash.template('url(<%= image.spriteRef %>)');
 
 	return template({ image: image });
 }
