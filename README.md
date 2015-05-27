@@ -64,7 +64,7 @@ Can define standalone CSS file that will be generated from the sprite.
 
 Type: `Function[], Function`
 Default: `[]`
-Example: [filterByFolder](#)
+Example: [filterBy](#advanced-example)
 Required: `false`
 
 Defines which filters apply to images found in the stylesheet. Each filter will be called with an image object. Each filter must return `Boolean` or thenable `Promise`, that will be resolved with `Boolean`. Each filter applies in series.
@@ -77,7 +77,7 @@ Built in filters:
 
 Type: `Function[], Function`
 Default: `[]`
-Example: `./dist/sprite.css`
+Example: [groupBy](#advanced-example)
 Required: `false`
 
 Defines logic of how to group images found in the stylesheet. Each grouper called with an image object. Each filter must return `String|Null` or thenable `Promise`, that will be resolved with `String|Null`. Each grouper applies in series.
