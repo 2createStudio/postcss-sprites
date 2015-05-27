@@ -1,0 +1,5 @@
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+<%= selectors.join(',\n') %> { background-image: <%= getBackgroundImageUrl(images[0]) %>; background: no-repeat; background-size: <%= getBackgroundSize(images[0]) %>; }
+	<% _.forEach(images, function(image) { %>
+	.<%= image.selector %> { background-position: <%= getBackgroundPosition(image) %>; width: <%= image.coordinates.width / image.ratio %>px; height: <%= image.coordinates.height / image.ratio %>px; }<% }); %>
+}
