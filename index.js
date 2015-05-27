@@ -391,8 +391,6 @@ function saveSprites(images, opts, sprites) {
 			.map(function(sprite) {
 				sprite.path = makeSpritePath(opts, sprite.groups);
 
-				console.log(sprite.path);
-
 				return Q.nfcall(fs.writeFile, sprite.path, new Buffer(sprite.image, 'binary'))
 					.then(function() {
 						log(util.format('Spritesheet %s generated.', sprite.path));
@@ -506,7 +504,7 @@ function preloadTemplates(images, opts, sprites, css) {
 		var all = lodash
 			.chain(TEMPLATES)
 			.map(function(templatePath, templateKey) {
-				return Q.nfcall(fs.readFile, path.resolve(templatePath), 'utf-8')
+				return Q.nfcall(fs.readFile, path.resolve(__dirname, templatePath), 'utf-8')
 					.then(function(data) {
 						return {
 							key: templateKey,
