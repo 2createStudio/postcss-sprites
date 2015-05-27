@@ -449,11 +449,11 @@ function updateReferences(images, opts, sprites, css) {
 			if (isToken(comment)) {
 				image = lodash.find(images, { url: comment.text });
 
-				// Fix path to the sprite
-				image.spriteRef = path.relative(path.dirname(css.source.input.file), image.spritePath);
-				image.spriteRef = path.posix.normalize(image.spriteRef);
-
 				if (image) {
+					// Fix path to the sprite
+					image.spriteRef = path.relative(path.dirname(css.source.input.file), image.spritePath);
+					image.spriteRef = image.spriteRef.replace(path.sep, '/', 'g');
+
 					backgroundImage = postcss.decl({
 						prop: 'background-image',
 						value: getBackgroundImageUrl(image)
