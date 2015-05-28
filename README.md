@@ -1,11 +1,6 @@
 # PostCSS Sprites
 [PostCSS](https://github.com/postcss/postcss) plugin that generate sprites from your stylesheets and then updates image references.
 
-## Todo
-
-- [ ] Tests
-- [ ] Publish as NPM module
-
 ## Install
 
 ```
@@ -25,10 +20,45 @@ var opts    = {
 };
 
 postcss(sprites(opts))
-	.process(css, { from: 'src/app.css', to: 'app.css' })
+	.process(css, { from: './src/app.css', to: './dist/app.css' })
     .then(function (result) {
-        fs.writeFileSync('app.css', result.css);
+        fs.writeFileSync('./dist/app.css', result.css);
     });
+```
+
+#### Input
+```css
+.comment { background: #fff url(images/sprite/ico-comment.png) no-repeat 0 0; }
+.bubble { background: url(images/sprite/ico-bubble.png) no-repeat 0 0; }
+
+.arrows { background: url(images/sprite/arrows@2x.png) no-repeat 0 0; }
+.logo { background: url(images/sprite/logo@2x.png) no-repeat 0 0; }
+```
+
+#### Output
+```css
+.comment { background-image: url(images/sprite.png); background-position: 0 0; background-color: #fff; }
+.bubble { background-image: url(images/sprite.png); background-position: 0 -50px; }
+
+.arrows { background-image: url(images/sprite.@2x.png); background-position: 0 0; background-size: 100px 100px; }
+.logo { background-image: url(images/sprite.@2x.png); background-position: 0 -50px; background-size: 100px 100px; }
+```
+
+#### Output - external
+```css
+.comment,
+.bubble { background-image: url(images/sprite.png); background: no-repeat; }
+
+.comment { background-position: 0 0; width: 50px; height: 50px; }
+.bubble { background-position: 0 -50px; width: 50px; height: 50px; }
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+	.arrows,
+	.logo { background-image: url(images/sprite.@2x.png); background: no-repeat; background-size: 100px 100px; }
+
+	.arrows { background-position: 0 0; width: 50px; height: 50px; }
+	.logo { background-position: 0 -50px; width: 50px; height: 50px; }
+}
 ```
 
 ## Options (plugin)
@@ -209,9 +239,9 @@ var opts    = {
 };
 
 postcss(sprites(opts))
-	.process(css, { from: 'src/app.css', to: 'app.css' })
+	.process(css, { from: './src/app.css', to: './dist/app.css' })
     .then(function (result) {
-        fs.writeFileSync('app.css', result.css);
+        fs.writeFileSync('./dist/app.css', result.css);
     });
 ```
 
