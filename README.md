@@ -215,5 +215,9 @@ postcss(sprites(opts))
     });
 ```
 
+## Contributing
+
+Pull requests are welcome.
+
 ## License
 MIT © 2createStudio
