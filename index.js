@@ -65,7 +65,7 @@ module.exports = postcss.plugin('postcss-sprites', plugin);
  */
 function plugin(opts) {
 	// Extend default options.
-	var options = lodash.merge(defaults, opts || {});
+	var options = lodash.merge({}, defaults, opts || {});
 
 	// Prepare filterBy functions.
 	setupFilterBy(options);
