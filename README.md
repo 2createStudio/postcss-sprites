@@ -200,10 +200,10 @@ var opts    = {
 		return /\.jpg$/gi.test(image.url);
 	},
 	groupBy      : function(image) {
-		return Q.Promise(function(resolve, reject) {
+		return Q.Promise(function(resolve) {
 			// Do something here...
 
-			resolve(image); // or reject(image);
+			resolve('groupName');
 		});
 	}
 };
