@@ -11,7 +11,7 @@
 		"css",
 		"spritesmith",
 		"png",
-		"postcssplugin"
+		"postcss-plugin"
 	],
 	"author": {
 		"name": "2createStudio",
