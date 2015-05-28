@@ -79,6 +79,9 @@ function plugin(opts) {
 			.all([getImages(css, options), options])
 			.spread(applyFilterBy)
 			.spread(applyGroupBy)
+			.spread(function(images, opts){
+				return setTokens(images, opts, css);
+			})
 			.spread(runSpriteSmith)
 			.spread(saveSprites)
 			.spread(mapSpritesProperties)
@@ -123,7 +126,6 @@ function getImages(css, opts) {
 			token   : '',
 			selector: null
 		};
-		var color;
 
 		// Manipulate only rules with background image
 		// in them.
@@ -131,41 +133,6 @@ function getImages(css, opts) {
 			image.url = getImageUrl(rule.toString());
 
 			if (isImageSupported(image.url)) {
-				rule.eachDecl(/^background/, function(decl) {
-					// We remove these declarations since
-					// our plugin will insert them when
-					// they are necessary.
-					if (decl.prop === BACKGROUND_REPEAT || decl.prop === BACKGROUND_SIZE) {
-						decl.removeSelf();
-					}
-
-					if (decl.prop === BACKGROUND) {
-						color = getColor(decl);
-
-						// Extract color to background-color propery
-						if (color && color.length === 1) {
-							rule.append({
-								prop: 'background-color',
-								value: color[0],
-								before: ' '
-							});
-						}
-					}
-
-					if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
-						image.token = postcss.comment({
-							text: image.url,
-							before: ' ',
-							left: '@replace|',
-							right: ''
-						});
-
-						// Replace the declaration with a comment token
-						// which will be used later for reference.
-						decl.replaceWith(image.token);
-					}
-				});
-
 				// Perform search for retina
 				// images if option is allowed.
 				if (opts.retina && isRetinaImage(image.url)) {
@@ -304,6 +271,68 @@ function applyGroupBy(images, opts) {
 
 			resolve([images, opts]);
 		});
+	});
+}
+
+/**
+ * Replace declarations with comment tokens.
+ *
+ * @param  {Array} images
+ * @param  {Object} opts
+ * @param  {Object} css
+ * @return {Promise}
+ */
+function setTokens(images, opts, css) {
+	return Q.Promise(function(resolve, reject) {
+		css.eachRule(function(rule) {
+			var url, image, color;
+
+			// Manipulate only rules with background image
+			// in them.
+			if (hasImageInRule(rule.toString())) {
+				url   = getImageUrl(rule.toString());
+				image = lodash.find(images, { url: url });
+
+				if (image) {
+					rule.eachDecl(/^background/, function(decl) {
+						// We remove these declarations since
+						// our plugin will insert them when
+						// they are necessary.
+						if (decl.prop === BACKGROUND_REPEAT || decl.prop === BACKGROUND_SIZE) {
+							decl.removeSelf();
+						}
+
+						if (decl.prop === BACKGROUND) {
+							color = getColor(decl);
+
+							// Extract color to background-color propery
+							if (color && color.length === 1) {
+								rule.append({
+									prop: 'background-color',
+									value: color[0],
+									before: ' '
+								});
+							}
+						}
+
+						if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
+							image.token = postcss.comment({
+								text: image.url,
+								before: ' ',
+								left: '@replace|',
+								right: ''
+							});
+
+							// Replace the declaration with a comment token
+							// which will be used later for reference.
+							decl.replaceWith(image.token);
+						}
+					});
+				}
+			}
+		});
+
+		resolve([images, opts]);
 	});
 }
 
