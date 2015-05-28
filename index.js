@@ -75,7 +75,6 @@ function plugin(opts) {
 
 	// Plugin initializer.
 	return function(css) {
-		Q.longStackSupport = true;
 		return Q
 			.all([getImages(css, options), options])
 			.spread(applyFilterBy)
@@ -89,11 +88,11 @@ function plugin(opts) {
 			.spread(preloadTemplates)
 			.spread(saveExternalStyle)
 			.then(function() {
-				log('Done.');
+				log('Done.', options.verbose);
 			})
 			.catch(function(err) {
 				if (err) {
-					log('Error: ' + err);
+					log('Error: ' + err, options.verbose);
 				}
 			});
 	}
@@ -183,7 +182,7 @@ function getImages(css, opts) {
 
 				images.push(image);
 			} else {
-				log('Skip ' + image.url + ' - not supported.');
+				log('Skip ' + image.url + ' - not supported.', opts.verbose);
 			}
 		}
 	});
@@ -217,7 +216,7 @@ function setupFilterBy(opts) {
 		return Q.Promise(function(resolve, reject) {
 			fs.exists(image.path, function(exists) {
 				if (!exists) {
-					log('Skip ' + image.url + ' - not exist.');
+					log('Skip ' + image.url + ' - not exist.',  opts.verbose);
 				}
 
 				resolve(exists);
@@ -388,7 +387,7 @@ function saveSprites(images, opts, sprites) {
 
 				return Q.nfcall(fs.writeFile, sprite.path, new Buffer(sprite.image, 'binary'))
 					.then(function() {
-						log(util.format('Spritesheet %s generated.', sprite.path));
+						log(util.format('Spritesheet %s generated.', sprite.path), opts.verbose);
 
 						return sprite;
 					});
@@ -544,7 +543,7 @@ function saveExternalStyle(images, opts, templates) {
 	}
 
 	if (!images.length) {
-		log('Skip external stylesheet, because there is no images.');
+		log('Skip external stylesheet, because there is no images.', opts.verbose);
 		return Q([images, opts, templates]);
 	}
 
@@ -589,7 +588,7 @@ function saveExternalStyle(images, opts, templates) {
 
  		Q.nfcall(fs.writeFile, opts.externalStyle, css)
  			.then(function() {
- 				log(util.format('External stylsheet %s generated.', path.basename(opts.externalStyle)));
+ 				log(util.format('External stylsheet %s generated.', path.basename(opts.externalStyle)), opts.verbose);
 
  				resolve();
  			});
