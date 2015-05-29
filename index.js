@@ -167,7 +167,7 @@ function getImages(css, opts) {
 
 /**
  * Prepare functions that will be used
- * to filtering the images.
+ * to filter images.
  *
  * @param  {Object} opts
  * @return
@@ -220,7 +220,7 @@ function applyFilterBy(images, opts) {
 
 /**
  * Prepare functions that will be used
- * to group the images.
+ * to group images.
  *
  * @param  {Object} opts
  * @return
