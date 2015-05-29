@@ -4,7 +4,7 @@
 ## Install
 
 ```
-npm install git+https://git@github.com/2createStudio/postcss-sprites.git
+npm install postcss-sprites
 ```
 
 ## Example
