@@ -30,7 +30,7 @@
 	"devDependencies": {
 		"tape": "^4.0.0",
 		"tap-spec": "^3.0.0",
-		"postcss": "^0.9.0"
+		"postcss": "^4.1.10"
 	},
 	"scripts": {
 		"test": "node ./test/index.js | ./node_modules/.bin/tap-spec"
