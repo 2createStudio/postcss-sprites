@@ -1,0 +1,14 @@
+.circle,
+.square { background: no-repeat; background-image: url(sprite.retina.png); }
+
+.circle { background-position: 0 0; width: 25px; height: 25px; }
+.square { background-position: -25px 0; width: 25px; height: 25px; }
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+	.circle,
+	.square { background: no-repeat; background-image: url(sprite.retina.@2x.png); background-size: 50px 25px; }
+	
+	.circle { background-position: 0 0; width: 25px; height: 25px; }
+	.square { background-position: -25px 0; width: 25px; height: 25px; }
+}
+

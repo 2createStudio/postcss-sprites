@@ -1,0 +1,7 @@
+.selector-a { background-image: url(circle.png); }
+.selector-b { background: url(square.png) no-repeat 0 0; }
+
+@media (max-width: 767px) {
+	.selector-a { background: url(circle@2x.png) no-repeat 0 0; }
+	.selector-b { background: url(square@2x.png) no-repeat 0 0; }
+}

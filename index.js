@@ -36,6 +36,7 @@ var TEMPLATES         = {
  * @type {Object}
  */
 var defaults = {
+	baseUrl       : './',
 	externalStyle : false,
 	spritePath    : null,
 	spriteName    : 'sprite.png',
@@ -479,7 +480,7 @@ function updateReferences(images, opts, sprites, css) {
 
 				if (image) {
 					// Fix path to the sprite
-					image.spriteRef = path.relative(path.dirname(css.source.input.file), image.spritePath);
+					image.spriteRef = path.relative(path.resolve(opts.baseUrl, '.'), image.spritePath);
 					image.spriteRef = image.spriteRef.replace(path.sep, '/', 'g');
 
 					backgroundImage = postcss.decl({
