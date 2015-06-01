@@ -1,4 +1,4 @@
-# PostCSS Sprites [![Build Status](https://travis-ci.org/2createStudio/postcss-sprites.svg?branch=master)](https://travis-ci.org/2createStudio/postcss-sprites)
+# PostCSS Sprites [![Build Status](https://travis-ci.org/2createStudio/postcss-sprites.svg?branch=master)](https://travis-ci.org/2createStudio/postcss-sprites) [![npm version](https://badge.fury.io/js/postcss-sprites.svg)](http://badge.fury.io/js/postcss-sprites)
 [PostCSS](https://github.com/postcss/postcss) plugin that generate sprites from your stylesheets and then updates image references.
 
 ## Install
