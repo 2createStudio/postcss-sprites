@@ -47,7 +47,7 @@ tape('should create a sprite and update references in stylesheet', function(t) {
 		});
 });
 
-tape('should extract hex color as background-color', function(t) {
+tape('should extract hex, rgba and rgb colors as background-color', function(t) {
 	t.plan(2);
 
 	var pluginOpts = {

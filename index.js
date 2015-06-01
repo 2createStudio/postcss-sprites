@@ -678,7 +678,18 @@ function getImageUrl(rule) {
  * @return {String|null}
  */
 function getColor(decl) {
-	return decl.value.match(/(?:\s*)(#([0-9a-f]{3}){1,2})/gi);
+	var regexes = ['(#([0-9a-f]{3}){1,2})', 'rgba?\\([^\\)]+\\)'];
+	var matches = null;
+
+	lodash.forEach(regexes, function(regex) {
+		var regex = new RegExp(regex, 'gi');
+
+		if (regex.test(decl.value)) {
+			matches = decl.value.match(regex);
+		}
+	});
+
+	return matches;
 }
 
 /**
