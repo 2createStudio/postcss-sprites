@@ -13,6 +13,7 @@ npm install postcss-sprites
 var postcss = require('postcss');
 var sprites = require('postcss-sprites');
 var opts    = {
+	baseUrl      : './dist',
 	externalStyle: './dist/sprite.css',
 	spritePath   : './dist/images',
 	spriteName   : 'sprite.png',
@@ -232,6 +233,7 @@ var postcss = require('postcss');
 var sprites = require('postcss-sprites');
 var Q       = require('q');
 var opts    = {
+	baseUrl      : './dist',
 	spritePath   : './dist/images',
 	spriteName   : 'sprite.png',
 	verbos       : true,
