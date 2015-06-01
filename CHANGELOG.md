@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 1.0.3 (2015-06-01)
+---------------------
+
+- Added support for rgb & rgba colors
+- Changed date format in CHANGELOG
+
 ### 1.0.2 (2015-06-01)
 ---------------------
 
