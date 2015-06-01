@@ -63,6 +63,15 @@ postcss(sprites(opts))
 
 ## Options (plugin)
 
+#### baseUrl
+
+Type: `String`
+Default: `./`
+Example: `./dist`
+Required: `true`
+
+Define the root of your output folder. This option is used to generate the correct path to spritesheet.
+
 #### spriteName
 
 Type: `String`
