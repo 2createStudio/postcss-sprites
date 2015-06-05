@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### 1.0.4 (2015-06-05)
+---------------------
+
+- Fixed bug with background declarations inside AtRule nodes
+
 ### 1.0.3 (2015-06-01)
 ---------------------
 
