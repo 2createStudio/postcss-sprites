@@ -285,7 +285,8 @@ function applyGroupBy(images, opts) {
  */
 function setTokens(images, opts, css) {
 	return Q.Promise(function(resolve, reject) {
-		css.eachRule(function(rule) {
+		css.eachDecl(/^background(-image)?$/, function(decl) {
+			var rule = decl.parent;
 			var url, image, color;
 
 			// Manipulate only rules with background image
@@ -295,40 +296,38 @@ function setTokens(images, opts, css) {
 				image = lodash.find(images, { url: url });
 
 				if (image) {
-					rule.eachDecl(/^background/, function(decl) {
-						// We remove these declarations since
-						// our plugin will insert them when
-						// they are necessary.
-						if (decl.prop === BACKGROUND_REPEAT || decl.prop === BACKGROUND_SIZE) {
-							decl.removeSelf();
-						}
+					// We remove these declarations since
+					// our plugin will insert them when
+					// they are necessary.
+					if (decl.prop === BACKGROUND_REPEAT || decl.prop === BACKGROUND_SIZE) {
+						decl.removeSelf();
+					}
 
-						if (decl.prop === BACKGROUND) {
-							color = getColor(decl);
+					if (decl.prop === BACKGROUND) {
+						color = getColor(decl);
 
-							// Extract color to background-color propery
-							if (color && color.length === 1) {
-								rule.append({
-									prop: 'background-color',
-									value: color[0],
-									before: ' '
-								});
-							}
-						}
-
-						if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
-							image.token = postcss.comment({
-								text: image.url,
-								before: ' ',
-								left: '@replace|',
-								right: ''
+						// Extract color to background-color propery
+						if (color && color.length === 1) {
+							rule.append({
+								prop: 'background-color',
+								value: color[0],
+								before: ' '
 							});
-
-							// Replace the declaration with a comment token
-							// which will be used later for reference.
-							decl.replaceWith(image.token);
 						}
-					});
+					}
+
+					if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
+						image.token = postcss.comment({
+							text: image.url,
+							before: ' ',
+							left: '@replace|',
+							right: ''
+						});
+
+						// Replace the declaration with a comment token
+						// which will be used later for reference.
+						decl.replaceWith(image.token);
+					}
 				}
 			}
 		});
