@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 1.0.5 (2015-06-08)
+---------------------
+
+- Allowed sprites for JPEG images
+- Fixed typos in docs
+
 ### 1.0.4 (2015-06-05)
 ---------------------
 
