@@ -44,6 +44,7 @@ var defaults = {
 	groupBy       : [],
 	retina        : false,
 	verbose       : false,
+	allowedExt    : ['.png'],
 
 	// spritesmith options
 	engine        : 'pixelsmith',
@@ -698,10 +699,9 @@ function getColor(decl) {
  * @return {Boolean}
  */
 function isImageSupported(url) {
-	var httpRegex   = /http[s]?/gi;
-	var pngRegex    = /\.*png$/gi;
+	var httpRegex = /http[s]?/gi;
 
-	return pngRegex.test(url) && !httpRegex.test(url);
+	return !httpRegex.test(url);
 }
 
 /**

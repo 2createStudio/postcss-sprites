@@ -179,3 +179,31 @@ tape('should filter and group images', function(t) {
 			t.equal(result.css, expectation, 'stylesheet updated');
 		});
 });
+
+tape('should allow images different than PNG', function(t) {
+	t.plan(2);
+
+	var pluginOpts = {
+		baseUrl   : path.resolve(testRoot, './build'),
+		spriteName: 'sprite.jpeg.jpg',
+		spritePath: path.resolve(testRoot, './build'),
+		verbose   : false,
+		padding   : 2
+	};
+	var processOpts = {
+		from  : path.resolve(testRoot, './fixtures/style.jpg.css'),
+		to    : path.resolve(testRoot, './build/style.jpg.css'),
+		expect: path.resolve(testRoot, './expectations/style.jpg.css')
+	};
+
+	var processor   = postcss([plugin(pluginOpts)]);
+	var css         = fs.readFileSync(processOpts.from, { encoding: 'utf8' });
+	var expectation = fs.readFileSync(processOpts.expect, { encoding: 'utf8' });
+
+	processor
+		.process(css, processOpts)
+		.then(function(result) {
+			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
+			t.equal(result.css, expectation, 'stylesheet updated');
+		});
+});
