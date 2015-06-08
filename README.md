@@ -236,7 +236,7 @@ var opts    = {
 	baseUrl      : './dist',
 	spritePath   : './dist/images',
 	spriteName   : 'sprite.png',
-	verbos       : true,
+	verbose      : true,
 	filterBy     : function(image) {
 		return /\.jpg$/gi.test(image.url);
 	},
