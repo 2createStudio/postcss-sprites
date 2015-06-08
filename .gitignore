@@ -1,3 +1,4 @@
 node_modules
 /test/build/*.css
 /test/build/*.png
+/test/build/*.jpg
