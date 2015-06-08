@@ -44,7 +44,7 @@ tape('should create a sprite and update references in stylesheet', function(t) {
 		.then(function(result) {
 			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
 			t.equal(result.css, expectation, 'stylesheet updated');
-		});
+		})
 });
 
 tape('should extract hex, rgba and rgb colors as background-color', function(t) {
@@ -103,42 +103,6 @@ tape('should create retina sprite and update references in stylesheet', function
 		});
 });
 
-tape('should create external stylesheet and respect retina', function(t) {
-	t.plan(4);
-
-	var pluginOpts = {
-		baseUrl      : path.resolve(testRoot, './build'),
-		externalStyle: path.resolve(testRoot, './build/external.css'),
-		spriteName   : 'sprite.retina.png',
-		spritePath   : path.resolve(testRoot, './build'),
-		verbose      : true,
-		retina       : true
-	};
-	var processOpts = {
-		from          : path.resolve(testRoot, './fixtures/style.retina.css'),
-		to            : path.resolve(testRoot, './build/style.retina.css'),
-		expect        : path.resolve(testRoot, './expectations/style.retina.css'),
-		expectExternal: path.resolve(testRoot, './expectations/external.css'),
-	};
-
-	var processor           = postcss([plugin(pluginOpts)]);
-	var css                 = fs.readFileSync(processOpts.from, { encoding: 'utf8' });
-	var expectation         = fs.readFileSync(processOpts.expect, { encoding: 'utf8' });
-	var expectationExternal = fs.readFileSync(processOpts.expectExternal, { encoding: 'utf8' });
-	var outputExternal;
-
-	processor
-		.process(css, processOpts)
-		.then(function(result) {
-			outputExternal = fs.readFileSync(pluginOpts.externalStyle, { encoding: 'utf8' });
-
-			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
-			t.ok(path.resolve(pluginOpts.spritePath, 'sprite.retina.@2x.png'), 'sprite@2x created');
-			t.equal(result.css, expectation, 'stylesheet updated');
-			t.equal(outputExternal, expectationExternal, 'external stylesheet created');
-		});
-});
-
 tape('should filter and group images', function(t) {
 	t.plan(3);
 
@@ -187,7 +151,7 @@ tape('should allow images different than PNG', function(t) {
 		baseUrl   : path.resolve(testRoot, './build'),
 		spriteName: 'sprite.jpeg.jpg',
 		spritePath: path.resolve(testRoot, './build'),
-		verbose   : false,
+		verbose   : true,
 		padding   : 2
 	};
 	var processOpts = {

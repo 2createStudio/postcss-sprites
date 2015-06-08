@@ -25,10 +25,6 @@ var BACKGROUND_IMAGE  = 'background-image';
 var BACKGROUND_COLOR  = 'background-color';
 var BACKGROUND_REPEAT = 'background-repeat';
 var BACKGROUND_SIZE   = 'background-size';
-var TEMPLATES         = {
-	REGULAR: './templates/regular.lodash',
-	RETINA : './templates/retina.lodash'
-};
 
 /**
  * Defaults.
@@ -37,14 +33,12 @@ var TEMPLATES         = {
  */
 var defaults = {
 	baseUrl       : './',
-	externalStyle : false,
 	spritePath    : null,
 	spriteName    : 'sprite.png',
 	filterBy      : [],
 	groupBy       : [],
 	retina        : false,
 	verbose       : false,
-	allowedExt    : ['.png'],
 
 	// spritesmith options
 	engine        : 'pixelsmith',
@@ -90,14 +84,12 @@ function plugin(opts) {
 			.spread(function(images, opts, sprites) {
 				return updateReferences(images, opts, sprites, css);
 			})
-			.spread(preloadTemplates)
-			.spread(saveExternalStyle)
 			.then(function() {
 				log('Done.', options.verbose);
 			})
 			.catch(function(err) {
 				if (err) {
-					log('Error: ' + err, options.verbose);
+					log('Error: ' + err);
 				}
 			});
 	}
@@ -125,8 +117,7 @@ function getImages(css, opts) {
 			retina  : false,
 			ratio   : 1,
 			groups  : [],
-			token   : '',
-			selector: null
+			token   : ''
 		};
 
 		// Manipulate only rules with background image
@@ -144,10 +135,6 @@ function getImages(css, opts) {
 
 				// Get the path to the image.
 				image.path = path.resolve(styleFilePath.substring(0, styleFilePath.lastIndexOf(path.sep)), image.url);
-
-				// Extract the selector for usage in
-				// the external stylesheet.
-				image.selector = getSelector(image.url);
 
 				images.push(image);
 			} else {
@@ -514,118 +501,6 @@ function updateReferences(images, opts, sprites, css) {
 }
 
 /**
- * Read and preload lodash templates
- * for the external stylesheet.
- *
- * @param  {Array}  images
- * @param  {Object} opts
- * @param  {Array}  sprites
- * @param  {Object} css
- * @return {Promise}
- */
-function preloadTemplates(images, opts, sprites, css) {
-	if (!opts.externalStyle) {
-		return Q([images, opts, sprites, css]);
-	}
-
-	return Q.Promise(function(resolve, reject) {
-		var all = lodash
-			.chain(TEMPLATES)
-			.map(function(templatePath, templateKey) {
-				return Q.nfcall(fs.readFile, path.resolve(__dirname, templatePath), 'utf-8')
-					.then(function(data) {
-						return {
-							key: templateKey,
-							fn : lodash.template(data, { imports: {
-								getBackgroundPosition: getBackgroundPosition,
-								getBackgroundSize    : getBackgroundSize,
-								getBackgroundImageUrl: getBackgroundImageUrl
-							}})
-						};
-					});
-			})
-			.value();
-
-		Q.all(all)
-			.then(function(templates) {
-				resolve([images, opts, templates]);
-			})
-			.catch(function(err) {
-				if (err) {
-					reject(err);
-				}
-			});
-	});
-}
-
-/**
- * Save an external stylesheet only
- * with sprite properties.
- *
- * @param  {Array}  images
- * @param  {Object} opts
- * @param  {Array}  templates
- * @return {Promise}
- */
-function saveExternalStyle(images, opts, templates) {
-	if (!opts.externalStyle) {
-		return Q([images, opts, templates]);
-	}
-
-	if (!images.length) {
-		log('Skip external stylesheet, because there is no images.', opts.verbose);
-		return Q([images, opts, templates]);
-	}
-
-	return Q.Promise(function(resolve, reject) {
-		var css = '';
-
-		// Group by ratio
-		var grouped = lodash
-			.chain(images)
-			.groupBy(function(image) {
-				return image.ratio;
-			})
-			.value();
-
-		// Create output folder
-		var stylePath = path.resolve(path.dirname(opts.externalStyle));
-
-		if (!fs.existsSync(stylePath)) {
-			mkdirp.sync(stylePath);
-		}
-
-		// Generate the CSS code
-		lodash.forEach(grouped, function(images, ratio) {
-			var data     = {};
-			var isRetina = lodash.parseInt(ratio) > 1;
-			var tplKey   = isRetina ? 'RETINA' : 'REGULAR';
-			var tpl      = lodash.find(templates, { key: tplKey });
-
-			data.selectors = lodash
-				.chain(images)
-				.pluck('selector')
-				.map(function(selector) {
-					return (isRetina ? '\t.' : '.') + selector;
-				})
-				.value();
-
-			data.images = images;
-
-			css += tpl.fn(data);
-			css += '\n';
- 		});
-
- 		Q.nfcall(fs.writeFile, opts.externalStyle, css)
- 			.then(function() {
- 				log(util.format('External stylsheet %s generated.', path.basename(opts.externalStyle)), opts.verbose);
-
- 				resolve();
- 			});
-	});
-}
-
-/**
  * Output a message to the console.
  *
  * @param  {String}  message
@@ -825,16 +700,4 @@ function getBackgroundSize(image) {
 	var template = lodash.template("<%= x %>px <%= y %>px");
 
 	return template({ x: x, y: y });
-}
-
-/**
- * Return a CSS selector based on the file name.
- *
- * @param  {String} filePath
- * @return {String}
- */
-function getSelector(filePath) {
-	var name = path.basename(filePath);
-
-	return name.replace(/(@\d+x)?\..+$/gi, '');
 }

@@ -1,3 +1,0 @@
-<%= selectors.join(',\n') %> { background: no-repeat; background-image: <%= getBackgroundImageUrl(images[0]) %>; }
-<% _.forEach(images, function(image) { %>
-.<%= image.selector %> { background-position: <%= getBackgroundPosition(image) %>; width: <%= image.coordinates.width %>px; height: <%= image.coordinates.height %>px; }<% }); %>

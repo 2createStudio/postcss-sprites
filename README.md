@@ -14,7 +14,6 @@ var postcss = require('postcss');
 var sprites = require('postcss-sprites');
 var opts    = {
 	baseUrl      : './dist',
-	externalStyle: './dist/sprite.css',
 	spritePath   : './dist/images',
 	spriteName   : 'sprite.png',
 	retina       : true
@@ -44,24 +43,6 @@ postcss(sprites(opts))
 .arrows { background-image: url(images/sprite.@2x.png); background-position: 0 0; background-size: 100px 100px; }
 .logo { background-image: url(images/sprite.@2x.png); background-position: 0 -50px; background-size: 100px 100px; }
 ```
-
-#### Output - external
-```css
-.comment,
-.bubble { background-image: url(images/sprite.png); background: no-repeat; }
-
-.comment { background-position: 0 0; width: 50px; height: 50px; }
-.bubble { background-position: 0 -50px; width: 50px; height: 50px; }
-
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-	.arrows,
-	.logo { background-image: url(images/sprite.@2x.png); background: no-repeat; background-size: 100px 100px; }
-
-	.arrows { background-position: 0 0; width: 50px; height: 50px; }
-	.logo { background-position: 0 -50px; width: 50px; height: 50px; }
-}
-```
-
 ## Options (plugin)
 
 #### baseUrl
@@ -90,15 +71,6 @@ Example: `./dist`
 Required: `true`
 
 Can define relative path of references in the output stylesheet.
-
-#### externalStyle
-
-Type: `String`
-Default: `false`
-Example: `./dist/sprite.css`
-Required: `false`
-
-Can define standalone CSS file that will be generated from the sprite.
 
 #### filterBy
 
@@ -219,12 +191,6 @@ Type: `Object`
 
 The string used to update image reference in the stylesheet.
 This token is [PostCSS Comment](https://github.com/postcss/postcss/blob/master/docs/api.md#comment-node).
-
-#### selector
-
-Type: `String`
-
-The CSS selector used for this image in the external stylesheet.
 
 ## Advanced Example
 
