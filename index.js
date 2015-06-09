@@ -32,9 +32,8 @@ var BACKGROUND_SIZE   = 'background-size';
  * @type {Object}
  */
 var defaults = {
-	baseUrl       : './',
-	spritePath    : null,
-	spriteName    : 'sprite.png',
+	stylesheetPath: './',
+	spritePath    : './sprite.png',
 	filterBy      : [],
 	groupBy       : [],
 	retina        : false,
@@ -397,6 +396,11 @@ function runSpriteSmith(images, opts) {
  */
 function saveSprites(images, opts, sprites) {
 	return Q.Promise(function(resolve, reject) {
+
+		if (!fs.existsSync(path.dirname(opts.spritePath))) {
+			mkdirp.sync(path.dirname(opts.spritePath));
+		}
+
 		var all = lodash
 			.chain(sprites)
 			.map(function(sprite) {
@@ -466,8 +470,8 @@ function updateReferences(images, opts, sprites, css) {
 				image = lodash.find(images, { url: comment.text });
 
 				if (image) {
-					// Fix path to the sprite
-					image.spriteRef = path.relative(path.resolve(opts.baseUrl, '.'), image.spritePath);
+					// Generate correct ref to the sprite
+					image.spriteRef = path.relative(opts.stylesheetPath, image.spritePath);
 					image.spriteRef = image.spriteRef.replace(path.sep, '/', 'g');
 
 					backgroundImage = postcss.decl({
@@ -637,18 +641,19 @@ function mask(toggle) {
  * @return {String}
  */
 function makeSpritePath(opts, groups) {
-	var groups   = groups || [];
-	var basePath = opts.spritePath || '';
-	var filePath;
+	var groups = groups || [];
+	var base   = path.dirname(opts.spritePath);
+	var file   = path.basename(opts.spritePath);
+	var parts;
 
 	if (!groups.length) {
-		return path.join(basePath, opts.spriteName);
+		return opts.spritePath;
 	}
 
-	filePath = opts.spriteName.split('.');
-	Array.prototype.splice.apply(filePath, [filePath.length - 1, 0].concat(groups));
+	parts = file.split('.');
+	Array.prototype.splice.apply(parts, [parts.length - 1, 0].concat(groups));
 
-	return path.join(basePath, filePath.join('.'));
+	return path.join(base, parts.join('.'));
 }
 
 /**

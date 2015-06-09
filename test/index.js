@@ -24,10 +24,9 @@ tape('should create a sprite and update references in stylesheet', function(t) {
 	t.plan(2);
 
 	var pluginOpts = {
-		baseUrl   : path.resolve(testRoot, './build'),
-		spriteName: 'sprite.basic.png',
-		spritePath: path.resolve(testRoot, './build'),
-		verbose   : true
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.basic.png'),
+		verbose       : true
 	};
 	var processOpts = {
 		from  : path.resolve(testRoot, './fixtures/style.basic.css'),
@@ -42,7 +41,7 @@ tape('should create a sprite and update references in stylesheet', function(t) {
 	processor
 		.process(css, processOpts)
 		.then(function(result) {
-			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
 			t.equal(result.css, expectation, 'stylesheet updated');
 		})
 });
@@ -51,10 +50,9 @@ tape('should extract hex, rgba and rgb colors as background-color', function(t) 
 	t.plan(2);
 
 	var pluginOpts = {
-		baseUrl   : path.resolve(testRoot, './build'),
-		spriteName: 'sprite.basic-color.png',
-		spritePath: path.resolve(testRoot, './build'),
-		verbose   : true
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.basic-color.png'),
+		verbose       : true
 	};
 	var processOpts = {
 		from  : path.resolve(testRoot, './fixtures/style.basic-color.css'),
@@ -69,7 +67,7 @@ tape('should extract hex, rgba and rgb colors as background-color', function(t) 
 	processor
 		.process(css, processOpts)
 		.then(function(result) {
-			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
 			t.equal(result.css, expectation, 'stylesheet updated, color extracted');
 		});
 });
@@ -78,11 +76,10 @@ tape('should create retina sprite and update references in stylesheet', function
 	t.plan(3);
 
 	var pluginOpts = {
-		baseUrl   : path.resolve(testRoot, './build'),
-		spriteName: 'sprite.retina.png',
-		spritePath: path.resolve(testRoot, './build'),
-		verbose   : true,
-		retina    : true
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.retina.png'),
+		verbose       : true,
+		retina        : true
 	};
 	var processOpts = {
 		from  : path.resolve(testRoot, './fixtures/style.retina.css'),
@@ -97,8 +94,8 @@ tape('should create retina sprite and update references in stylesheet', function
 	processor
 		.process(css, processOpts)
 		.then(function(result) {
-			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
-			t.ok(path.resolve(pluginOpts.spritePath, 'sprite.retina.@2x.png'), 'sprite@2x created');
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
+			t.ok(fs.existsSync(path.resolve(path.dirname(pluginOpts.spritePath), 'sprite.retina.@2x.png')), 'sprite@2x created');
 			t.equal(result.css, expectation, 'stylesheet updated');
 		});
 });
@@ -107,11 +104,10 @@ tape('should filter and group images', function(t) {
 	t.plan(3);
 
 	var pluginOpts = {
-		baseUrl   : path.resolve(testRoot, './build'),
-		spriteName: 'sprite.fg.png',
-		spritePath: path.resolve(testRoot, './build'),
-		verbose   : true,
-		groupBy   : function(image) {
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.fg.png'),
+		verbose       : true,
+		groupBy       : function(image) {
 			// our custom retina grouper
 			var regex = /@\d+x/gi;
 
@@ -138,8 +134,8 @@ tape('should filter and group images', function(t) {
 	processor
 		.process(css, processOpts)
 		.then(function(result) {
-			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
-			t.ok(path.resolve(pluginOpts.spritePath, 'sprite.fg.retina.png'), 'sprite@retina created');
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
+			t.ok(fs.existsSync(path.resolve(path.dirname(pluginOpts.spritePath), 'sprite.fg.retina.png')), 'sprite@retina created');
 			t.equal(result.css, expectation, 'stylesheet updated');
 		});
 });
@@ -148,11 +144,10 @@ tape('should allow images different than PNG', function(t) {
 	t.plan(2);
 
 	var pluginOpts = {
-		baseUrl   : path.resolve(testRoot, './build'),
-		spriteName: 'sprite.jpeg.jpg',
-		spritePath: path.resolve(testRoot, './build'),
-		verbose   : true,
-		padding   : 2
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.jpeg.jpg'),
+		verbose       : true,
+		padding       : 2
 	};
 	var processOpts = {
 		from  : path.resolve(testRoot, './fixtures/style.jpg.css'),
@@ -167,7 +162,7 @@ tape('should allow images different than PNG', function(t) {
 	processor
 		.process(css, processOpts)
 		.then(function(result) {
-			t.ok(path.resolve(pluginOpts.spritePath, pluginOpts.spriteName), 'sprite created');
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
 			t.equal(result.css, expectation, 'stylesheet updated');
 		});
 });

@@ -13,10 +13,9 @@ npm install postcss-sprites
 var postcss = require('postcss');
 var sprites = require('postcss-sprites');
 var opts    = {
-	baseUrl      : './dist',
-	spritePath   : './dist/images',
-	spriteName   : 'sprite.png',
-	retina       : true
+	stylesheetPath: './dist',
+	spritePath    : './dist/images/sprite.png',
+	retina        : true
 };
 
 postcss(sprites(opts))
@@ -45,32 +44,23 @@ postcss(sprites(opts))
 ```
 ## Options (plugin)
 
-#### baseUrl
+#### stylesheetPath
 
 Type: `String`
 Default: `./`
-Example: `./dist`
+Example: `./dist/css`
 Required: `true`
 
-Defines the root of your output folder. This option is used to generate the correct path to spritesheet.
-
-#### spriteName
-
-Type: `String`
-Default: `sprite.png`
-Example: `all.png`
-Required: `true`
-
-Defines the base of output sprite. Base means that if you will group your sprites by some criteria, name will change.
+Defines relative path to output stylesheet. This is used to generate correct relative path to spritesheet for CSS rules.
 
 #### spritePath
 
 Type: `String`
-Default: `null`
-Example: `./dist`
+Default: `./sprite.png`
+Example: `./dist/images/sprite.png`
 Required: `true`
 
-Can define relative path of references in the output stylesheet.
+Can define relative path to ouput sprite.
 
 #### filterBy
 
@@ -199,14 +189,13 @@ var postcss = require('postcss');
 var sprites = require('postcss-sprites');
 var Q       = require('q');
 var opts    = {
-	baseUrl      : './dist',
-	spritePath   : './dist/images',
-	spriteName   : 'sprite.png',
-	verbose      : true,
-	filterBy     : function(image) {
+	stylesheetPath: './dist',
+	spritePath    : './dist/images/sprite.png',
+	verbose       : true,
+	filterBy      : function(image) {
 		return /\.jpg$/gi.test(image.url);
 	},
-	groupBy      : function(image) {
+	groupBy       : function(image) {
 		return Q.Promise(function(resolve) {
 			// Do something here...
 
