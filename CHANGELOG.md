@@ -1,5 +1,14 @@
 ## CHANGELOG
 
+### 1.0.6 (2015-06-09)
+---------------------
+
+- Added `stylesheetPath` option
+- Changed `spritePath` option
+- Deprecated `externalStylsheet` option
+- Deprecated `baseUrl` option
+- Deprecated `spriteName` option
+
 ### 1.0.5 (2015-06-08)
 ---------------------
 
