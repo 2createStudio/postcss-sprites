@@ -286,9 +286,9 @@ function setTokens(images, opts, css) {
 					// We remove these declarations since
 					// our plugin will insert them when
 					// they are necessary.
-					if (decl.prop === BACKGROUND_REPEAT || decl.prop === BACKGROUND_SIZE) {
+					rule.eachDecl(/^background-(repeat|size|position)$/, function(decl) {
 						decl.removeSelf();
-					}
+					});
 
 					if (decl.prop === BACKGROUND) {
 						color = getColor(decl);
