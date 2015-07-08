@@ -472,7 +472,7 @@ function updateReferences(images, opts, sprites, css) {
 				if (image) {
 					// Generate correct ref to the sprite
 					image.spriteRef = path.relative(opts.stylesheetPath, image.spritePath);
-					image.spriteRef = image.spriteRef.replace(path.sep, '/', 'g');
+					image.spriteRef = image.spriteRef.split(path.sep).join('/');
 
 					backgroundImage = postcss.decl({
 						prop: 'background-image',
