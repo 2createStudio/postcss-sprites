@@ -99,12 +99,21 @@ Defines whether or not to search for retina mark in the filename. If true then i
 
 #### outputDimensions
 
-Type: `Boolean`  
-Default: `false`  
-Example: `true`  
+Type: `Boolean`
+Default: `false`
+Example: `true`
 Required: `false`
 
 Outputs `width` and `height` declarations.
+
+#### skipPrefix
+
+Type: `Boolean`
+Default: `false`
+Example: `true`
+Required: `false`
+
+Skips the prefix in the name of output spritesheet. e.g. `sprite.customGroup.png => customGroup.png`
 
 #### verbose
 
