@@ -34,6 +34,7 @@ var BACKGROUND_SIZE   = 'background-size';
 var defaults = {
 	stylesheetPath: './',
 	spritePath    : './sprite.png',
+	skipPrefix    : false,
 	filterBy      : [],
 	groupBy       : [],
 	retina        : false,
@@ -664,6 +665,10 @@ function makeSpritePath(opts, groups) {
 
 	parts = file.split('.');
 	Array.prototype.splice.apply(parts, [parts.length - 1, 0].concat(groups));
+
+	if (opts.skipPrefix) {
+		parts.shift();
+	}
 
 	return path.join(base, parts.join('.'));
 }

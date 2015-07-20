@@ -217,8 +217,44 @@ tape('should output dimensions for retina iamges when outputDimensions option is
 	processor
 		.process(css, processOpts)
 		.then(function(result) {
-			console.log(result.css);
 			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
 			t.equal(result.css, expectation, 'stylesheet updated, dimensions included');
 		})
+});
+
+tape('should respect skipPrefix option', function(t) {
+	t.plan(2);
+
+	var pluginOpts = {
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.png'),
+		skipPrefix    : true,
+		verbose       : true,
+		groupBy       : function(image) {
+			// our custom retina grouper
+			var regex = /@\d+x/gi;
+
+			if (regex.test(image.url)) {
+				return 'retina';
+			}
+
+			return null;
+		},
+		filterBy   : function(image) {
+			return !/not-exist/gi.test(image.url);
+		}
+	};
+	var processOpts = {
+		from  : path.resolve(testRoot, './fixtures/style.fg.css')
+	};
+
+	var processor = postcss([plugin(pluginOpts)]);
+	var css       = fs.readFileSync(processOpts.from, { encoding: 'utf8' });
+
+	processor
+		.process(css, processOpts)
+		.then(function(result) {
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
+			t.ok(fs.existsSync(path.resolve(path.dirname(pluginOpts.spritePath), 'retina.png')), 'sprite@retina created');
+		});
 });
