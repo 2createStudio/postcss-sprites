@@ -193,3 +193,32 @@ tape('should output dimensions when outputDimensions option is true', function(t
 			t.equal(result.css, expectation, 'stylesheet updated, dimensions included');
 		})
 });
+
+tape('should output dimensions for retina iamges when outputDimensions option is true', function(t) {
+	t.plan(2);
+
+	var pluginOpts = {
+		stylesheetPath: path.resolve(testRoot, './build'),
+		spritePath    : path.resolve(testRoot, './build/sprite.retina.png'),
+		verbose       : true,
+		retina        : true,
+		outputDimensions: true
+	};
+	var processOpts = {
+		from  : path.resolve(testRoot, './fixtures/style.retina.css'),
+		to    : path.resolve(testRoot, './build/style.retina.css'),
+		expect: path.resolve(testRoot, './expectations/style.basic-dimensions-with-retina.css')
+	};
+
+	var processor   = postcss([plugin(pluginOpts)]);
+	var css         = fs.readFileSync(processOpts.from, { encoding: 'utf8' });
+	var expectation = fs.readFileSync(processOpts.expect, { encoding: 'utf8' });
+
+	processor
+		.process(css, processOpts)
+		.then(function(result) {
+			console.log(result.css);
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
+			t.equal(result.css, expectation, 'stylesheet updated, dimensions included');
+		})
+});

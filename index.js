@@ -463,7 +463,7 @@ function mapSpritesProperties(images, opts, sprites) {
 function updateReferences(images, opts, sprites, css) {
 	return Q.Promise(function(resolve, reject) {
 		css.eachComment(function(comment) {
-			var image, backgroundImage, backgroundPosition, backgroundSize;
+			var rule, image, backgroundImage, backgroundPosition, backgroundSize;
 
 			// Manipulate only token comments
 			if (isToken(comment)) {
@@ -487,12 +487,13 @@ function updateReferences(images, opts, sprites, css) {
 					// Replace the comment and append necessary properties.
 					comment.replaceWith(backgroundImage);
 
-					var rule = backgroundImage.parent;
+					// Output the dimensions
+					rule = backgroundImage.parent;
 					if (opts.outputDimensions) {
 						['height', 'width'].forEach(function(prop) {
 							rule.insertAfter(backgroundImage, postcss.decl({
 								prop: prop,
-								value: image.coordinates[prop] + 'px'
+								value: (image.retina ? image.coordinates[prop] / image.ratio : image.coordinates[prop]) + 'px'
 							}));
 						});
 					}
