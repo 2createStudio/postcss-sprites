@@ -1,6 +1,6 @@
 {
 	"name": "postcss-sprites",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"description": "Generate sprites from stylesheets.",
 	"main": "index.js",
 	"keywords": [

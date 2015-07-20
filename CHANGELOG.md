@@ -1,5 +1,11 @@
 ## CHANGELOG
 
+### 1.0.9 (2015-07-20)
+---------------------
+
+- Added `outputDimensions` option
+- Added `skipPrefix` option
+
 ### 1.0.8 (2015-07-08)
 ---------------------
 
