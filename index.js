@@ -486,7 +486,18 @@ function updateReferences(images, opts, sprites, css) {
 
 					// Replace the comment and append necessary properties.
 					comment.replaceWith(backgroundImage);
-					backgroundImage.parent.insertAfter(backgroundImage, backgroundPosition);
+
+					var rule = backgroundImage.parent;
+					if (opts.outputDimensions) {
+						['height', 'width'].forEach(function(prop) {
+							rule.insertAfter(backgroundImage, postcss.decl({
+								prop: prop,
+								value: image.coordinates[prop] + 'px'
+							}));
+						});
+					}
+
+					rule.insertAfter(backgroundImage, backgroundPosition);
 
 					if (image.retina) {
 						backgroundSize = postcss.decl({

@@ -1,0 +1,2 @@
+.selector-a { background-image: url(sprite.basic.png); background-position: 0 0; width: 25px; height: 25px; }
+.selector-b { background-image: url(sprite.basic.png); background-position: -25px 0; width: 25px; height: 25px; }
