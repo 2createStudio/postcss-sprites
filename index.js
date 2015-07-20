@@ -32,13 +32,14 @@ var BACKGROUND_SIZE   = 'background-size';
  * @type {Object}
  */
 var defaults = {
-	stylesheetPath: './',
-	spritePath    : './sprite.png',
-	skipPrefix    : false,
-	filterBy      : [],
-	groupBy       : [],
-	retina        : false,
-	verbose       : false,
+	stylesheetPath  : './',
+	spritePath      : './sprite.png',
+	skipPrefix      : false,
+	outputDimensions: false,
+	filterBy        : [],
+	groupBy         : [],
+	retina          : false,
+	verbose         : false,
 
 	// spritesmith options
 	engine        : 'pixelsmith',
