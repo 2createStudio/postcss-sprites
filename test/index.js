@@ -166,3 +166,30 @@ tape('should allow images different than PNG', function(t) {
 			t.equal(result.css, expectation, 'stylesheet updated');
 		});
 });
+
+tape('should output dimensions when outputDimensions option is true', function(t) {
+	t.plan(2);
+
+	var pluginOpts = {
+		stylesheetPath  : path.resolve(testRoot, './build'),
+		spritePath      : path.resolve(testRoot, './build/sprite.basic.png'),
+		outputDimensions: true,
+		verbose         : true
+	};
+	var processOpts = {
+		from  : path.resolve(testRoot, './fixtures/style.basic.css'),
+		to    : path.resolve(testRoot, './build/style.basic.css'),
+		expect: path.resolve(testRoot, './expectations/style.basic-dimensions.css')
+	};
+
+	var processor   = postcss([plugin(pluginOpts)]);
+	var css         = fs.readFileSync(processOpts.from, { encoding: 'utf8' });
+	var expectation = fs.readFileSync(processOpts.expect, { encoding: 'utf8' });
+
+	processor
+		.process(css, processOpts)
+		.then(function(result) {
+			t.ok(fs.existsSync(pluginOpts.spritePath), 'sprite created');
+			t.equal(result.css, expectation, 'stylesheet updated, dimensions included');
+		})
+});

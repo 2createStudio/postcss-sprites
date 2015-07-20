@@ -97,6 +97,15 @@ Required: `false`
 
 Defines whether or not to search for retina mark in the filename. If true then it will look for `@{number}x` syntax. For example: `image@2x.png`.
 
+#### outputDimensions
+
+Type: `Boolean`  
+Default: `false`  
+Example: `true`  
+Required: `false`
+
+Outputs `width` and `height` declarations.
+
 #### verbose
 
 Type: `Boolean`
