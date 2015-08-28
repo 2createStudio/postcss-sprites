@@ -109,7 +109,7 @@ function getImages(css, opts) {
 	var styleFilePath = css.source.input.file;
 
 	// Find only background & background-image declarations.
-	css.eachRule(function(rule) {
+	css.walkRules(function(rule) {
 		// The host object
 		// for each found image.
 		var image = {
@@ -274,9 +274,9 @@ function applyGroupBy(images, opts) {
  */
 function setTokens(images, opts, css) {
 	return Q.Promise(function(resolve, reject) {
-		css.eachDecl(/^background(-image)?$/, function(decl) {
+		css.walkDecls(/^background(-image)?$/, function(decl) {
 			var rule = decl.parent;
-			var url, image, color;
+			var url, image, color, declaration;
 
 			// Manipulate only rules with background image
 			// in them.
@@ -288,7 +288,7 @@ function setTokens(images, opts, css) {
 					// We remove these declarations since
 					// our plugin will insert them when
 					// they are necessary.
-					rule.eachDecl(/^background-(repeat|size|position)$/, function(decl) {
+					rule.walkDecls(/^background-(repeat|size|position)$/, function(decl) {
 						decl.removeSelf();
 					});
 
@@ -297,21 +297,24 @@ function setTokens(images, opts, css) {
 
 						// Extract color to background-color propery
 						if (color && color.length === 1) {
-							rule.append({
+							declaration = postcss.decl({
 								prop: 'background-color',
-								value: color[0],
-								before: ' '
+								value: color[0]
 							});
+							declaration.raws.before = ' ';
+
+							rule.append(declaration);
 						}
 					}
 
 					if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
 						image.token = postcss.comment({
 							text: image.url,
-							before: ' ',
-							left: '@replace|',
-							right: ''
 						});
+
+						image.token.raws.before = ' ';
+						image.token.raws.left   = '@replace|';
+						image.token.raws.right  = '';
 
 						// Replace the declaration with a comment token
 						// which will be used later for reference.
@@ -464,7 +467,7 @@ function mapSpritesProperties(images, opts, sprites) {
  */
 function updateReferences(images, opts, sprites, css) {
 	return Q.Promise(function(resolve, reject) {
-		css.eachComment(function(comment) {
+		css.walkComments(function(comment) {
 			var rule, image, backgroundImage, backgroundPosition, backgroundSize;
 
 			// Manipulate only token comments
