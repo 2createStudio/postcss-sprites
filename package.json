@@ -20,7 +20,7 @@
 	"repository": "https://github.com/2createStudio/postcss-sprites",
 	"license": "MIT",
 	"dependencies": {
-		"postcss": "^4.1.10",
+		"postcss": "^5.0.2",
 		"async": "^0.9.0",
 		"lodash": "^3.8.0",
 		"mkdirp": "^0.5.1",
@@ -29,8 +29,7 @@
 	},
 	"devDependencies": {
 		"tape": "^4.0.0",
-		"tap-spec": "^3.0.0",
-		"postcss": "^4.1.10"
+		"tap-spec": "^3.0.0"
 	},
 	"scripts": {
 		"test": "node ./test/index.js | ./node_modules/.bin/tap-spec"
