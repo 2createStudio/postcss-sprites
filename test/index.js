@@ -194,7 +194,7 @@ tape('should output dimensions when outputDimensions option is true', function(t
 		})
 });
 
-tape('should output dimensions for retina iamges when outputDimensions option is true', function(t) {
+tape('should output dimensions for retina images when outputDimensions option is true', function(t) {
 	t.plan(2);
 
 	var pluginOpts = {
