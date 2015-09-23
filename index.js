@@ -289,7 +289,7 @@ function setTokens(images, opts, css) {
 					// our plugin will insert them when
 					// they are necessary.
 					rule.walkDecls(/^background-(repeat|size|position)$/, function(decl) {
-						decl.removeSelf();
+						decl.remove();
 					});
 
 					if (decl.prop === BACKGROUND) {
