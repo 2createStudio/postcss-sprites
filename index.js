@@ -529,7 +529,7 @@ function updateReferences(images, opts, sprites, css) {
  * @return
  */
 function log(message, verbose) {
-	if (message && verbose) {
+	if (message && !verbose) {
 		util.log(util.format('[postcss-sprites] => %s', message));
 	}
 }
