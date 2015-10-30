@@ -106,10 +106,10 @@ function plugin(opts) {
 */
 function getImages(css, opts) {
 	var images        = [];
-	var styleFilePath = css.source.input.file;
 
 	// Find only background & background-image declarations.
 	css.walkRules(function(rule) {
+		var styleFilePath = rule.source.input.file;
 		// The host object
 		// for each found image.
 		var image = {
@@ -529,7 +529,7 @@ function updateReferences(images, opts, sprites, css) {
  * @return
  */
 function log(message, verbose) {
-	if (message && !verbose) {
+	if (message && verbose) {
 		util.log(util.format('[postcss-sprites] => %s', message));
 	}
 }
