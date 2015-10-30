@@ -1,5 +1,10 @@
 ## CHANGELOG
 
+### 2.0.2 (2015-10-30)
+---------------------
+
+- ``styleFilePath`` now is relative to specific file - (thanks to [CatTail](https://github.com/CatTail))
+
 ### 2.0.1 (2015-09-23)
 ---------------------
 
