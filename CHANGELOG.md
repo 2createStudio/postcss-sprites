@@ -1,9 +1,15 @@
 ## CHANGELOG
 
+### 2.0.3 (2016-01-06)
+---------------------
+
+- Revert breaking changes introduced in PR #25
+- Fix scan regex
+
 ### 2.0.2 (2015-10-30)
 ---------------------
 
-- ``styleFilePath`` now is relative to specific file - (thanks to [CatTail](https://github.com/CatTail))
+- ``styleFilePath`` now is relative to specific file
 
 ### 2.0.1 (2015-09-23)
 ---------------------
@@ -65,7 +71,7 @@
 - Added new option - baseUrl
 - Fixed issue [#8](https://github.com/2createStudio/postcss-sprites/issues/8)
 - Fixed bug with groupBy & filterBy functions in gulp tasks
-- Fixed css properties order in external stylesheet - (thanks to [Vasilij Chernov](https://github.com/bivihoba))
+- Fixed css properties order in external stylesheet
 
 ### 1.0.1 (2015-05-28)
 ---------------------
