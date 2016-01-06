@@ -552,7 +552,7 @@ function isBackgroundDecl(decl) {
  * @return {Boolean}
  */
 function hasImageInRule(rule) {
-	return /background[^:]*.*url[^;]+;/gi.test(rule);
+	return /background[^:]*.*url[^;]+/gi.test(rule);
 }
 
 /**
