@@ -16,7 +16,8 @@
     "test": "./node_modules/.bin/ava --verbose --serial",
     "build": "./node_modules/.bin/babel src/ --out-dir lib/",
     "watch": "./node_modules/.bin/babel --watch src/ --out-dir lib/",
-    "prepublish": "npm test"
+    "prepublish": "npm test",
+    "pretest": "npm run build"
   },
   "repository": "2createStudio/postcss-sprites",
   "author": "2createStudio",
