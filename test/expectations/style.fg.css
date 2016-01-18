@@ -1,9 +1,0 @@
-.selector-a { background-image: url(sprite.fg.png); background-position: 0 0; }
-.selector-b { background-image: url(sprite.fg.png); background-position: -25px 0; }
-.selector-c { background: #fff url(not-exist.png) no-repeat 0 0; }
-
-@media (max-width: 767px) {
-	.selector-a { background-image: url(sprite.fg.retina.png); background-position: 0 0; }
-	.selector-b { background-image: url(sprite.fg.retina.png); background-position: -50px 0; }
-	.selector-c { background-image: url(not-exist@2x.png); }
-}

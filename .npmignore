@@ -1,4 +1,6 @@
-node_modules
-test
+.babelrc
 .gitignore
 .travis.yml
+node_modules/
+test/
+src/
