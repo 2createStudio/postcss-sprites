@@ -1,0 +1,3 @@
+.selector-a { background-image: url(sprite.png); background-position: 0px 0px; }
+.selector-b { background-image: url(sprite.png); background-position: -25px 0px; background-color: #000; }
+.selector-c { background-image: url(sprite.png); background-position: -25px 0px; background-color: rgba(255, 255, 255, .2); }
