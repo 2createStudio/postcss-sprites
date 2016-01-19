@@ -72,7 +72,7 @@ See [PostCSS](https://github.com/postcss/postcss) docs for examples for your env
 - Required: `false`
 - Options: `Function|Function[]`
 
-**Every function must return a ``Promise`` which should be resolved or rejected.*
+**Every function must return a ``Promise`` which should be resolved or rejected.**
 
 Built-in filters:
 
