@@ -54,12 +54,6 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 		// Extend defaults
 		opts = _.merge({}, defaults, opts);
 
-		// Throw error because `retina` & `responsive`
-		// options cannot be enabled at same time
-		if (opts.retina && opts.responsive) {
-			throw new Error(`postcss-sprites: Can't use 'retina' & 'responsive' at same time.`);
-		}
-
 		// Prepare filter & group functions
 		prepareFilterBy(opts);
 		prepareGroupBy(opts);
