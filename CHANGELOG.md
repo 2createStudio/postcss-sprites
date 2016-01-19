@@ -1,5 +1,13 @@
 # Change Log
 
+## [3.0.1] - 2016-01-19
+### Fixed
+- Typos in README
+- Typos in plugin output
+
+### Removed
+- Unused code for responsive sprites
+
 ## [3.0.0] - 2016-01-18
 ### Added
 - ``basePath`` option
