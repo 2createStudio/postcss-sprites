@@ -68,7 +68,7 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 			.spread((opts, images, spritesheets) => mapSpritesheetProps(opts, images, spritesheets))
 			.spread((opts, images, spritesheets) => updateReferences(css, opts, images, spritesheets))
 			.spread((root, opts, images, spritesheets) => {
-				console.log(`postcss-sprites: ${spritesheets.length} spritesheets generated.`);
+				console.log(`postcss-sprites: ${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
 			});
 	}
 });
