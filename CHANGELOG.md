@@ -1,5 +1,12 @@
 # Change Log
 
+## [3.0.3] - 2016-01-20
+### Fixed
+- Fix "Fix: Broken CommonJS export"
+
+### Changed
+- Add note in README how to require properly the module
+
 ## [3.0.2] - 2016-01-20
 ### Fixed
 - Broken CommonJS export
