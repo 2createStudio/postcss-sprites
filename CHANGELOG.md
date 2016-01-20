@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.0.2] - 2016-01-20
+### Fixed
+- Broken CommonJS export
+
 ## [3.0.1] - 2016-01-19
 ### Fixed
 - Typos in README
