@@ -10,7 +10,7 @@
 
 ```javascript
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('postcss-sprites').default;
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',

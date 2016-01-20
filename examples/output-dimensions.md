@@ -10,14 +10,15 @@
 
 ```javascript
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('postcss-sprites').default;
+var updateRule = require('postcss-sprites').updateRule;
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',
 	hooks: {
 		onUpdateRule: function(rule, token, image) {
 			// Use built-in logic for background-image & background-position
-			sprites.updateRule(rule, token, image);
+			updateRule(rule, token, image);
 
 			['width', 'height'].forEach(function(prop) {
 				rule.insertAfter(rule.last, postcss.decl({

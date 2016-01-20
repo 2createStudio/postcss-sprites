@@ -20,7 +20,7 @@
 
 ```javascript
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('postcss-sprites').default; // Babel@6 drops support for CommonJS interop
 var opts = {
 	stylesheetPath: './dist',
 	spritePath: './dist/images/'
