@@ -1,5 +1,12 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- Tests for examples
+
+### Fixed
+- Various typos in examples
+
 ## [3.0.3] - 2016-01-20
 ### Fixed
 - Fix "Fix: Broken CommonJS export"
