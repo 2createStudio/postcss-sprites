@@ -233,5 +233,5 @@ Pull requests are welcome.
 ```
 $ git clone git@github.com:2createStudio/postcss-sprites.git
 $ npm install
-$ npm run-script watch
+$ npm run watch
 ```
