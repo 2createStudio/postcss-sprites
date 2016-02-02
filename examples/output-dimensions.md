@@ -36,6 +36,6 @@ var opts = {
 ###### Output
 
 ```css
-.circle { background-image: url(images/sprite.shapes.png); background-position: 0 0; width: 20px; height: 20px; }
-.square { background-image: url(images/sprite.shapes.png); background-position: -20px 0; width: 20px; height: 20px; }
+.circle { background-image: url(images/sprite.png); background-position: 0 0; width: 20px; height: 20px; }
+.square { background-image: url(images/sprite.png); background-position: -20px 0; width: 20px; height: 20px; }
 ```
