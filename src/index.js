@@ -69,7 +69,12 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 			.spread((opts, images, spritesheets) => updateReferences(css, opts, images, spritesheets))
 			.spread((root, opts, images, spritesheets) => {
 				console.log(`postcss-sprites: ${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
-			});
+			})
+      .catch((err) => {
+        console.error('An error occurred while processing files');
+        console.error(err);
+        throw new Error(err);
+      });
 	}
 });
 
