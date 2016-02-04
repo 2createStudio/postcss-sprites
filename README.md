@@ -19,14 +19,25 @@
 ### Usage
 
 ```javascript
+var fs = require('fs');
 var postcss = require('postcss');
 var sprites = require('postcss-sprites').default; // Babel@6 drops support for CommonJS interop
+
+var css = fs.readFileSync('./css/style.css', 'utf8');
 var opts = {
 	stylesheetPath: './dist',
 	spritePath: './dist/images/'
 };
 
-postcss(sprites(opts));
+postcss([sprites(opts)])
+	.process(css, {
+		from: './css/style.css',
+		to: './dist/style.css'
+	})
+	.then(function(result) {
+		fs.writeFileSync('./dist/style.css', result.css);
+	});
+
 ```
 
 See [PostCSS](https://github.com/postcss/postcss) docs for examples for your environment.
