@@ -134,16 +134,3 @@ test('skip prefix', async (t) => {
 
 	return run(inputPath, expectedPath, opts, t);
 });
-
-test('throws error', async (t) => {
-  const inputPath = './fixtures/error/style.css';
-	const opts = {
-		stylesheetPath: './build/example-error/',
-		spritePath: './build/example-error/',
-  };
-  
-	const input = await fs.readFileAsync(inputPath, 'utf8');
-	const processor = postcss([plugin(opts)]);
-
-  t.throws(processor.process(input, { from: inputPath }));
-});

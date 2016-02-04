@@ -16,6 +16,19 @@ async function run(inputPath, expectedPath, opts, t) {
 	t.same(result.css, expected);
 }
 
+test('throws error', async (t) => {
+	const inputPath = './fixtures/error/style.css';
+	const opts = {
+		stylesheetPath: './build/example-error/',
+		spritePath: './build/example-error/',
+	};
+  
+	const input = await fs.readFileAsync(inputPath, 'utf8');
+	const processor = postcss([plugin(opts)]);
+
+	t.throws(processor.process(input, { from: inputPath }));
+});
+
 test('basic', async (t) => {
 	const inputPath = './fixtures/basic/style.css';
 	const expectedPath = './expectations/basic/style.css';
