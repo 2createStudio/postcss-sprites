@@ -1,11 +1,15 @@
 # Change Log
 
-## [Unreleased]
+## [3.1.0] - 2016-02-04
 ### Added
 - Tests for examples
+- Info logs
+
+### Changed
+- 'Usage' example
 
 ### Fixed
-- Various typos in examples
+- Typos in examples
 
 ## [3.0.3] - 2016-01-20
 ### Fixed
