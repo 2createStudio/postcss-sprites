@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.1.1] - 2016-03-23
+### Fixed
+- NaN paddings in retina sprites
+
 ## [3.1.0] - 2016-02-04
 ### Added
 - Tests for examples
