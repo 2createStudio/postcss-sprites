@@ -297,7 +297,7 @@ export function runSpritesmith(opts, images) {
 						.flatten('ratio')
 						.uniq()
 						.head()
-						.value();
+						.value().ratio;
 
 					if (ratio) {
 						config.padding = config.padding * ratio;
