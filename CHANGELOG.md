@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.1.2] - 2016-04-11
+### Fixed
+- Typescript support
+
 ## [3.1.1] - 2016-03-23
 ### Fixed
 - NaN paddings in retina sprites
