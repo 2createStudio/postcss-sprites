@@ -35,5 +35,6 @@
     "lodash": "^4.0.0",
     "postcss": "^5.0.14",
     "spritesmith": "^3.0.1"
-  }
+  },
+  "typings": "./typings.d.ts"
 }
