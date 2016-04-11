@@ -343,6 +343,8 @@ export function saveSpritesheets(opts, images, spritesheets) {
 			throw new Error('postcss-sprites: Spritesheet requires a relative path.');
 		}
 
+		spritesheet.path = spritesheet.path.replace(/\\/g, '/');
+
 		return fs.outputFileAsync(spritesheet.path, spritesheet.image);
 	}).then(spritesheets => {
 		return [opts, images, spritesheets];
