@@ -29,6 +29,6 @@ test('should add coords & spritePath to every image', async (t) => {
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 
-	t.same(images[0].spritePath, 'build/basic/sprite.png');
-	t.same(images[0].coords, { x: 0, y: 0, height: 25, width: 25 });
+	t.deepEqual(images[0].spritePath, 'build/basic/sprite.png');
+	t.deepEqual(images[0].coords, { x: 0, y: 0, height: 25, width: 25 });
 });

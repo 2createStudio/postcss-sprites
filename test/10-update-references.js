@@ -36,7 +36,7 @@ test('should update CSS declarations', async (t) => {
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
 
-	t.same(root.toString(), expected);
+	t.deepEqual(root.toString(), expected);
 });
 
 test('should use function provided by onUpdateRule hook', async (t) => {
@@ -65,5 +65,5 @@ test('should use function provided by onUpdateRule hook', async (t) => {
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
 
-	t.same(root.toString(), expected);
+	t.deepEqual(root.toString(), expected);
 });

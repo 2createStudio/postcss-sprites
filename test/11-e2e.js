@@ -13,7 +13,7 @@ async function run(inputPath, expectedPath, opts, t) {
 	const processor = postcss([plugin(opts)]);
 	const result = await processor.process(input, { from: inputPath });
 
-	t.same(result.css, expected);
+	t.deepEqual(result.css, expected);
 }
 
 test('throws error', async (t) => {
@@ -22,7 +22,7 @@ test('throws error', async (t) => {
 		stylesheetPath: './build/example-error/',
 		spritePath: './build/example-error/',
 	};
-  
+
 	const input = await fs.readFileAsync(inputPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 

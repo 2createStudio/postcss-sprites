@@ -22,7 +22,7 @@ test('should use built-in filter for non existing files', async (t) => {
 
 	const [ opts, images ] = await applyFilterBy(t.context.opts, t.context.images);
 
-	t.ok(images.length === 0);
+	t.truthy(images.length === 0);
 });
 
 test('should use filters provided by user', async (t) => {
@@ -44,6 +44,6 @@ test('should use filters provided by user', async (t) => {
 
 	const [ opts, images ] = await applyFilterBy(t.context.opts, t.context.images);
 
-	t.ok(images.length === 1);
-	t.ok(images[0].url.indexOf('square') > -1);
+	t.truthy(images.length === 1);
+	t.truthy(images[0].url.indexOf('square') > -1);
 });

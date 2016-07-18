@@ -14,7 +14,7 @@ async function run(inputPath, expectedPath, opts, t) {
 	const processor = postcss([plugin(opts)]);
 	const result = await processor.process(input, { from: inputPath });
 
-	t.same(result.css, expected);
+	t.deepEqual(result.css, expected);
 }
 
 test('filter by', async (t) => {
@@ -66,7 +66,7 @@ test('output dimensions', async (t) => {
 				['width', 'height'].forEach((prop) => {
 					rule.insertAfter(rule.last, postcss.decl({
 						prop,
-						value: `${image.coords[prop]}px` 
+						value: `${image.coords[prop]}px`
 					}));
 				});
 			}

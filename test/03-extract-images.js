@@ -17,7 +17,7 @@ test.beforeEach((t) => {
 test('should convert rules to image objects', async (t) => {
 	const [ opts, images ] = await extractImages(t.context.ast, t.context.opts);
 
-	t.same(images.length, 4);
+	t.deepEqual(images.length, 4);
 });
 
 test('should handle retina images', async (t) => {
@@ -25,7 +25,7 @@ test('should handle retina images', async (t) => {
 
 	const [ opts, images ] = await extractImages(t.context.ast, t.context.opts);
 
-	t.same(images[2].ratio, 2);
+	t.deepEqual(images[2].ratio, 2);
 });
 
 test('should handle images with absolute url', async (t) => {
@@ -33,5 +33,5 @@ test('should handle images with absolute url', async (t) => {
 
 	const [ opts, images ] = await extractImages(t.context.ast, t.context.opts);
 
-	t.ok(images[3].path.indexOf('images') > -1);
+	t.truthy(images[3].path.indexOf('images') > -1);
 });

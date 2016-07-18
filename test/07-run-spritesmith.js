@@ -19,8 +19,8 @@ test('should generate spritesheets', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 
-	t.ok(spritesheets.length === 1);
-	t.same(spritesheets[0].properties, { width: 50, height: 25 });
+	t.truthy(spritesheets.length === 1);
+	t.deepEqual(spritesheets[0].properties, { width: 50, height: 25 });
 });
 
 test('should generate spritesheets by groups', async (t) => {
@@ -35,6 +35,6 @@ test('should generate spritesheets by groups', async (t) => {
 	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 
-	t.ok(spritesheets.length === 2);
-	t.ok(spritesheets[1].groups.indexOf('@2x') > -1);
+	t.truthy(spritesheets.length === 2);
+	t.truthy(spritesheets[1].groups.indexOf('@2x') > -1);
 });

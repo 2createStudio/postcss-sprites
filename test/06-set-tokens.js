@@ -25,7 +25,7 @@ test('should replace background declarations with comment tokens', async (t) => 
 	`;
 	const root = await run(input);
 
-	t.same(root.toString(), expected);
+	t.deepEqual(root.toString(), expected);
 });
 
 test('should remove any background-repeat, background-size or background-position declarations', async (t) => {
@@ -39,5 +39,5 @@ test('should remove any background-repeat, background-size or background-positio
 	`;
 	const root = await run(input);
 
-	t.same(root.toString(), expected);
+	t.deepEqual(root.toString(), expected);
 });

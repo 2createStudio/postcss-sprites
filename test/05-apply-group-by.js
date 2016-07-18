@@ -23,9 +23,9 @@ test('should use built-in retina grouping function', async (t) => {
 	[ opts, images ] = await extractImages(t.context.ast, t.context.opts);
 	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 
-	t.ok(images.length === 2);
-	t.ok(images[0].groups.indexOf('@2x') > -1);
-	t.ok(images[1].groups.indexOf('@2x') > -1);
+	t.truthy(images.length === 2);
+	t.truthy(images[0].groups.indexOf('@2x') > -1);
+	t.truthy(images[1].groups.indexOf('@2x') > -1);
 });
 
 test('should use grouping functions provided by user', async (t) => {
@@ -45,6 +45,6 @@ test('should use grouping functions provided by user', async (t) => {
 	[ opts, images ] = await extractImages(t.context.ast, t.context.opts);
 	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 
-	t.ok(images[0].groups.indexOf('png') > -1);
-	t.ok(images[0].groups.indexOf('@2x') > -1);
+	t.truthy(images[0].groups.indexOf('png') > -1);
+	t.truthy(images[0].groups.indexOf('@2x') > -1);
 });
