@@ -55,11 +55,11 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 		opts = _.merge({}, defaults, opts);
 
 		// Prepare filter & group functions
-		prepareFilterBy(opts);
+		prepareFilterBy(opts, result);
 		prepareGroupBy(opts);
 
 		// Process it
-		return extractImages(css, opts)
+		return extractImages(css, opts, result)
 			.spread((opts, images) => applyFilterBy(opts, images))
 			.spread((opts, images) => applyGroupBy(opts, images))
 			.spread((opts, images) => setTokens(css, opts, images))
@@ -68,7 +68,7 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 			.spread((opts, images, spritesheets) => mapSpritesheetProps(opts, images, spritesheets))
 			.spread((opts, images, spritesheets) => updateReferences(css, opts, images, spritesheets))
 			.spread((root, opts, images, spritesheets) => {
-				console.log(`postcss-sprites: ${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
+				result.warn(`${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
 			})
 			.catch((err) => {
 				console.error(`postcss-sprites: An error occurred while processing files - ${err.message}`);
@@ -81,9 +81,10 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 /**
  * Prepares the filter functions.
  * @param  {Object} opts
+ * @param  {Result} result
  * @return
  */
-export function prepareFilterBy(opts) {
+export function prepareFilterBy(opts, result) {
 	if (_.isFunction(opts.filterBy)) {
 		opts.filterBy = [opts.filterBy];
 	}
@@ -92,7 +93,7 @@ export function prepareFilterBy(opts) {
 	opts.filterBy.unshift(image => {
 		return fs.statAsync(image.path)
 			.catch(() => {
-				console.log(`postcss-sprites: Skip ${image.url} because doesn't exist.`);
+				result.warn(`skip ${image.url} because doesn't exist.`);
 				throw new Error();
 			});
 	});
@@ -125,9 +126,10 @@ export function prepareGroupBy(opts) {
  * that can be converted to sprite.
  * @param  {Node}   root
  * @param  {Object} opts
+ * @param  {Result} result
  * @return {Promise}
  */
-export function extractImages(root, opts) {
+export function extractImages(root, opts, result) {
 	let images = [];
 
 	// Search for background & background image declartions
@@ -165,7 +167,7 @@ export function extractImages(root, opts) {
 
 				images.push(image);
 			} else {
-				console.log(`postcss-sprites: Skip ${image.url} because isn't supported.`);
+				result.warn(`skip ${image.url} because isn't supported.`);
 			}
 		}
 	});
