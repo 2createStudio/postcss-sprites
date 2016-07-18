@@ -1,7 +1,5 @@
-.babelrc
 .gitignore
 .travis.yml
 .editorconfig
 node_modules/
 test/
-src/
