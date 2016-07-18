@@ -1,5 +1,10 @@
 # Change Log
 
+## [3.2.0] - 2016-07-18
+### Changed
+- Use ``Result.warn`` API instead of ``console.warn``
+- Publish the original source to npm
+
 ## [3.1.2] - 2016-04-11
 ### Fixed
 - Typescript support
