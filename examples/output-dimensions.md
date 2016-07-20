@@ -15,19 +15,19 @@ var updateRule = require('postcss-sprites').updateRule;
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',
-	hooks: {
-		onUpdateRule: function(rule, token, image) {
-			// Use built-in logic for background-image & background-position
-			updateRule(rule, token, image);
+    hooks: {
+        onUpdateRule: function(rule, token, image) {
+            // Use built-in logic for background-image & background-position
+            updateRule(rule, token, image);
 
-			['width', 'height'].forEach(function(prop) {
-				rule.insertAfter(rule.last, postcss.decl({
-					prop: prop,
-					value: image.coords[prop] + 'px'
-				}));
-			});
-		}
-	}
+            ['width', 'height'].forEach(function(prop) {
+                rule.insertAfter(rule.last, {
+                    prop: prop,
+                    value: image.coords[prop] + 'px'
+                });
+            });
+        }
+    }
 }
 ```
 
