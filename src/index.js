@@ -68,7 +68,7 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 			.spread((opts, images, spritesheets) => mapSpritesheetProps(opts, images, spritesheets))
 			.spread((opts, images, spritesheets) => updateReferences(css, opts, images, spritesheets))
 			.spread((root, opts, images, spritesheets) => {
-				result.warn(`${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
+				console.log(`${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
 			})
 			.catch((err) => {
 				console.error(`postcss-sprites: An error occurred while processing files - ${err.message}`);
