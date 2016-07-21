@@ -1,5 +1,12 @@
 # Change Log
 
+## [3.2.1] - 2016-07-21
+### Changed
+- Use `console.log` instead of `Result.warn` to print the success message
+
+### Fixed
+- Broken tests under Node 6
+
 ## [3.2.0] - 2016-07-18
 ### Changed
 - Use ``Result.warn`` API instead of ``console.warn``
