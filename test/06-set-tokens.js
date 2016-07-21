@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { defaults, extractImages, setTokens } from '../lib';
 
 async function run(input) {
-	let root = postcss.parse(input, { fomr: '/tmp/test.css' });
+	let root = postcss.parse(input, { from: '/tmp/test.css' });
 	let opts = _.merge({}, defaults);
 	let images;
 
