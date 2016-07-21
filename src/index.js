@@ -94,7 +94,8 @@ export function prepareFilterBy(opts, result) {
 		return fs.statAsync(image.path)
 			.catch(() => {
 				result.warn(`skip ${image.url} because doesn't exist.`);
-				throw new Error();
+
+				return Promise.reject();
 			});
 	});
 }
