@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.2] - 2016-07-22
+### Fixed
+- Warnings in built-in filter
+
 ## [3.2.1] - 2016-07-21
 ### Changed
 - Use `console.log` instead of `Result.warn` to print the success message
