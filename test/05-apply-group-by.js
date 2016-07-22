@@ -48,3 +48,23 @@ test('should use grouping functions provided by user', async (t) => {
 	t.truthy(images[0].groups.indexOf('png') > -1);
 	t.truthy(images[0].groups.indexOf('@2x') > -1);
 });
+
+test('should use grouping functions by filename provided by user', async (t) => {
+	let images, opts;
+
+	t.context.opts.retina = true;
+	t.context.opts.groupBy.push((image, file) => {
+		if (file.indexOf('test.css') !== -1) {
+			return Promise.resolve('testing');
+		}
+
+		return Promise.reject();
+	});
+
+	prepareGroupBy(t.context.opts);
+
+	[ opts, images ] = await extractImages(t.context.ast, t.context.opts);
+	[ opts, images ] = await applyGroupBy(t.context.opts, images, t.context.ast.source.input.file);
+
+	t.truthy(images[0].groups.indexOf('testing') > -1);
+});
