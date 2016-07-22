@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.2.3] - 2016-07-22
+### Fixed
+- Usage of `Result.warn`
+
 ## [3.2.2] - 2016-07-22
 ### Fixed
 - Warnings in built-in filter
