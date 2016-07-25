@@ -50,15 +50,15 @@ test('should use filters provided by user', async (t) => {
 });
 
 test('should use filters by filename provided by user', async (t) => {
-	t.context.opts.filterBy.push((image, file) => {
-		if (file.indexOf('test.css') !== -1) {
+	t.context.opts.filterBy.push((image) => {
+		if (image.styleFilePath.indexOf('test.css') !== -1) {
 			return Promise.reject();
 		}
 
 		return Promise.resolve();
 	});
 
-	const [ opts, images ] = await applyFilterBy(t.context.opts, t.context.images, t.context.ast.source.input.file);
+	const [ opts, images ] = await applyFilterBy(t.context.opts, t.context.images);
 
 	t.truthy(images.length === 0);
 });

@@ -53,8 +53,8 @@ test('should use grouping functions by filename provided by user', async (t) => 
 	let images, opts;
 
 	t.context.opts.retina = true;
-	t.context.opts.groupBy.push((image, file) => {
-		if (file.indexOf('test.css') !== -1) {
+	t.context.opts.groupBy.push((image) => {
+		if (image.styleFilePath.indexOf('test.css') !== -1) {
 			return Promise.resolve('testing');
 		}
 
@@ -64,7 +64,7 @@ test('should use grouping functions by filename provided by user', async (t) => 
 	prepareGroupBy(t.context.opts);
 
 	[ opts, images ] = await extractImages(t.context.ast, t.context.opts);
-	[ opts, images ] = await applyGroupBy(t.context.opts, images, t.context.ast.source.input.file);
+	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 
 	t.truthy(images[0].groups.indexOf('testing') > -1);
 });

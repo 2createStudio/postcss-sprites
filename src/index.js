@@ -60,8 +60,8 @@ export default postcss.plugin('postcss-sprites', (opts = {}) => {
 
 		// Process it
 		return extractImages(css, opts, result)
-			.spread((opts, images) => applyFilterBy(opts, images, css.source.input.file))
-			.spread((opts, images) => applyGroupBy(opts, images, css.source.input.file))
+			.spread((opts, images) => applyFilterBy(opts, images))
+			.spread((opts, images) => applyGroupBy(opts, images))
 			.spread((opts, images) => setTokens(css, opts, images))
 			.spread((root, opts, images) => runSpritesmith(opts, images))
 			.spread((opts, images, spritesheets) => saveSpritesheets(opts, images, spritesheets))
@@ -144,7 +144,8 @@ export function extractImages(root, opts, result) {
 			retina: false,
 			ratio: 1,
 			groups: [],
-			token: ''
+			token: '',
+			styleFilePath: styleFilePath
 		};
 
 		// Manipulate only rules with image in them
@@ -182,13 +183,12 @@ export function extractImages(root, opts, result) {
  * Apply filterBy functions over collection of exported images.
  * @param  {Object}  opts
  * @param  {Array}   images
- * @param  {String}   file
  * @return {Promise}
  */
-export function applyFilterBy(opts, images, file) {
+export function applyFilterBy(opts, images) {
 	return Promise.reduce(opts.filterBy, (images, filterFn) => {
 		return Promise.filter(images, (image) => {
-			return filterFn(image, file)
+			return filterFn(image)
 				.then(() => true)
 				.catch(() => false);
 		}, { concurrency: 1 });
@@ -199,13 +199,12 @@ export function applyFilterBy(opts, images, file) {
  * Apply groupBy functions over collection of exported images.
  * @param  {Object} opts
  * @param  {Array}  images
- * @param  {String}  file
  * @return {Promise}
  */
-export function applyGroupBy(opts, images, file) {
+export function applyGroupBy(opts, images) {
 	return Promise.reduce(opts.groupBy, (images, groupFn) => {
 		return Promise.map(images, (image) => {
-			return groupFn(image, file)
+			return groupFn(image)
 				.then(group => {
 					image.groups.push(group);
 					return image;
