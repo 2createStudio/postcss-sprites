@@ -179,6 +179,9 @@ Built-in filters:
 
 Every filter or group function will be called with an ``Image`` object.
 
+###### styleFilePath
+
+> An absolute path to the stylesheet - ``/Path/to/your/source/stylesheet.css``
 
 ###### path
 
