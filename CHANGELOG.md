@@ -1,5 +1,9 @@
 # Change Log
 
+## [3.3.0] - 2016-07-26
+### Added
+- The filepath of stylesheet to `Image` object
+
 ## [3.2.3] - 2016-07-22
 ### Fixed
 - Usage of `Result.warn`
