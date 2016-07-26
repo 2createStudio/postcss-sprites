@@ -15,6 +15,7 @@ test.beforeEach(async (t) => {
 	const [ opts, images ] = await extractImages(ast, t.context.opts);
 
 	t.context.images = images;
+	t.context.ast = ast;
 });
 
 test('should use built-in filter for non existing files', async (t) => {
@@ -46,4 +47,18 @@ test('should use filters provided by user', async (t) => {
 
 	t.truthy(images.length === 1);
 	t.truthy(images[0].url.indexOf('square') > -1);
+});
+
+test('should use filters by filename provided by user', async (t) => {
+	t.context.opts.filterBy.push((image) => {
+		if (image.styleFilePath.indexOf('test.css') !== -1) {
+			return Promise.reject();
+		}
+
+		return Promise.resolve();
+	});
+
+	const [ opts, images ] = await applyFilterBy(t.context.opts, t.context.images);
+
+	t.truthy(images.length === 0);
 });

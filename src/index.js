@@ -144,7 +144,8 @@ export function extractImages(root, opts, result) {
 			retina: false,
 			ratio: 1,
 			groups: [],
-			token: ''
+			token: '',
+			styleFilePath: styleFilePath
 		};
 
 		// Manipulate only rules with image in them
