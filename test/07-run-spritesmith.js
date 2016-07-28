@@ -23,6 +23,18 @@ test('should generate spritesheets', async (t) => {
 	t.deepEqual(spritesheets[0].properties, { width: 50, height: 25 });
 });
 
+test('should generate SVG spritesheets', async (t) => {
+	const cssContents = await readFileAsync('./fixtures/svg-basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './fixtures/svg-basic/style.css' });
+	let images, spritesheets, opts;
+
+	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
+
+	t.truthy(spritesheets.length === 1);
+	t.deepEqual(spritesheets[0].properties, { width: 962, height: 600 });
+});
+
 test('should generate spritesheets by groups', async (t) => {
 	const cssContents = await readFileAsync('./fixtures/retina/style.css');
 	const ast = postcss.parse(cssContents, { from: './fixtures/retina/style.css' });

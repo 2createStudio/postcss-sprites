@@ -4,6 +4,7 @@ import postcss from 'postcss';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import Spritesmith from 'spritesmith';
+import svgspriter from './svg-sprite';
 
 /**
  * Wrap with promises.
@@ -43,7 +44,8 @@ export const defaults = {
 		padding: 0,
 		engineOpts: {},
 		exportOpts: {}
-	}
+	},
+	svgsprite: {}
 };
 
 /**
@@ -281,6 +283,7 @@ export function setTokens(root, opts, images) {
 export function runSpritesmith(opts, images) {
 	return new Promise((resolve, reject) => {
 		const spritesmithRunAsync = Promise.promisify(Spritesmith.run, { context: Spritesmith });
+		const svgspriterRunAsync = svgspriter;
 		const promises = _.chain(images)
 			.groupBy((image) => {
 				let tmp = image.groups.map(maskGroup(true));
@@ -289,10 +292,15 @@ export function runSpritesmith(opts, images) {
 				return tmp.join(GROUP_DELIMITER);
 			})
 			.map((images, tmp) => {
-				const config = _.merge({}, opts.spritesmith, {
+				const rasterConfig = _.merge({}, opts.spritesmith, {
+					src: _.map(images, 'path')
+				});
+				const svgConfig = _.merge({}, {
+					svgSpriteConfig: opts.svgsprite,
 					src: _.map(images, 'path')
 				});
 				let ratio;
+				let promise;
 
 				// Increase padding to handle retina ratio
 				if (areRetinaImages(images)) {
@@ -303,11 +311,17 @@ export function runSpritesmith(opts, images) {
 						.value().ratio;
 
 					if (ratio) {
-						config.padding = config.padding * ratio;
+						rasterConfig.padding = rasterConfig.padding * ratio;
 					}
 				}
 
-				return spritesmithRunAsync(config)
+				if ( areSvgImages(images) ) {
+					promise = svgspriterRunAsync(svgConfig)
+				} else {
+					promise = spritesmithRunAsync(rasterConfig);
+				}
+
+				return promise
 					.then((spritesheet) => {
 						tmp = tmp.split(GROUP_DELIMITER);
 						tmp.shift();
@@ -338,9 +352,10 @@ export function runSpritesmith(opts, images) {
  */
 export function saveSpritesheets(opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
+		let extension = areSvgImages(images) ? 'svg' : 'png';
 		spritesheet.path = _.isFunction(opts.hooks.onSaveSpritesheet)
-			? opts.hooks.onSaveSpritesheet(opts, spritesheet.groups)
-			: makeSpritesheetPath(opts, spritesheet.groups);
+			? opts.hooks.onSaveSpritesheet(opts, spritesheet.groups, extension)
+			: makeSpritesheetPath(opts, spritesheet.groups, extension);
 
 		if (!spritesheet.path) {
 			throw new Error('postcss-sprites: Spritesheet requires a relative path.');
@@ -567,13 +582,23 @@ export function areRetinaImages(images) {
 }
 
 /**
+ * Checkes whether all images are SVGs.
+ * @param  {Array} images
+ * @return {Boolean}
+ */
+export function areSvgImages(images) {
+	return _.every(images, image => path.extname(image.path) === '.svg');
+}
+
+/**
  * Generate the filepath to the sprite.
  * @param  {Object}  opts
  * @param  {Array}   groups
+ * @param  {String}  extension
  * @return {String}
  */
-export function makeSpritesheetPath(opts, groups = []) {
-	return path.join(opts.spritePath, ['sprite', ...groups, 'png'].join('.'));
+export function makeSpritesheetPath(opts, groups = [], extension) {
+	return path.join(opts.spritePath, ['sprite', ...groups, extension].join('.'));
 }
 
 /**

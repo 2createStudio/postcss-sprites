@@ -1,0 +1,14 @@
+{
+	"coordinates": { {{#shapes}}
+		"{{#selector.shape}}{{& name}}{{/selector.shape}}": {
+			"x": {{#abs}}{{position.absolute.x}}{{/abs}},
+			"y": {{#abs}}{{position.absolute.y}}{{/abs}},{{#dimensions.inline}}
+			"width": {{width.outer}},
+			"height": {{height.outer}}{{/dimensions.inline}}
+		} {{^last}},{{/last}}
+	{{/shapes}} },
+	"properties": {
+		"width": {{spriteWidth}},
+		"height": {{spriteHeight}}
+	}
+}
