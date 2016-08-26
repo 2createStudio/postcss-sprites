@@ -98,8 +98,8 @@ test('should extract color from declaration value', (t) => {
 });
 
 test('should generate spritesheet filename', (t) => {
-	t.deepEqual(makeSpritesheetPath({ spritePath: './' }, [], 'png'), 'sprite.png');
-	t.deepEqual(makeSpritesheetPath({ spritePath: './' }, ['@2x'], 'png'), 'sprite.@2x.png');
+	t.deepEqual(makeSpritesheetPath({ spritePath: './' }, { groups: [], extension: 'png' }), 'sprite.png');
+	t.deepEqual(makeSpritesheetPath({ spritePath: './' }, { groups: ['@2x'], extension: 'png' }), 'sprite.@2x.png');
 });
 
 test('should detect comment tokens', (t) => {

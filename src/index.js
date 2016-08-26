@@ -356,11 +356,9 @@ export function runSpritesmith(opts, images) {
  */
 export function saveSpritesheets(opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
-		const { groups, extension } = spritesheet;
-
 		spritesheet.path = _.isFunction(opts.hooks.onSaveSpritesheet)
-			? opts.hooks.onSaveSpritesheet(opts, groups, extension)
-			: makeSpritesheetPath(opts, groups, extension);
+			? opts.hooks.onSaveSpritesheet(opts, spritesheet)
+			: makeSpritesheetPath(opts, spritesheet);
 
 		if (!spritesheet.path) {
 			throw new Error('postcss-sprites: Spritesheet requires a relative path.');
@@ -580,11 +578,10 @@ export function maskGroup(toggle = false) {
 /**
  * Generate the filepath to the sprite.
  * @param  {Object}  opts
- * @param  {Array}   groups
- * @param  {String}  extension
+ * @param  {Object}  spritesheet
  * @return {String}
  */
-export function makeSpritesheetPath(opts, groups = [], extension) {
+export function makeSpritesheetPath(opts, { groups, extension }) {
 	return path.join(opts.spritePath, ['sprite', ...groups, extension].join('.'));
 }
 

@@ -16,9 +16,9 @@ var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',
 	hooks: {
-		onSaveSpritesheet: function(opts, groups) {
+		onSaveSpritesheet: function(opts, spritesheet) {
 			// We assume that the groups is not an empty array
-			var filenameChunks = groups.slice().push('png');
+			var filenameChunks = spritesheet.groups.slice().push('png');
 			return path.join(opts.spritePath, filenameChunks.join('.'));
 		}
 	}
