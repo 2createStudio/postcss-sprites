@@ -41,7 +41,9 @@ test('should save SVG spritesheets', async (t) => {
 
 	t.context.opts.spritePath = './build/svg-basic';
 
+	prepareGroupBy(t.context.opts);
 	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 

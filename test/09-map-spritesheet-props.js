@@ -8,7 +8,9 @@ import {
 	extractImages,
 	runSpritesmith,
 	saveSpritesheets,
-	mapSpritesheetProps
+	mapSpritesheetProps,
+	prepareGroupBy,
+	applyGroupBy
 } from '../lib';
 
 const readFileAsync = Promise.promisify(fs.readFile);
@@ -40,7 +42,9 @@ test('should add coords & spritePath to every SVG image', async (t) => {
 
 	t.context.opts.spritePath = './build/svg-basic';
 
+	prepareGroupBy(t.context.opts);
 	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);

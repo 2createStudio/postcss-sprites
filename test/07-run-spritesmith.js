@@ -28,7 +28,9 @@ test('should generate SVG spritesheets', async (t) => {
 	const ast = postcss.parse(cssContents, { from: './fixtures/svg-basic/style.css' });
 	let images, spritesheets, opts;
 
+	prepareGroupBy(t.context.opts);
 	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 
 	t.truthy(spritesheets.length === 1);
