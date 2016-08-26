@@ -11,7 +11,7 @@ import {
 	mapSpritesheetProps,
 	prepareGroupBy,
 	applyGroupBy
-} from '../lib';
+} from '../lib/core';
 
 const readFileAsync = Promise.promisify(fs.readFile);
 

@@ -1,6 +1,6 @@
 import test from 'ava';
 import postcss from 'postcss';
-import { extractImages, defaults } from '../lib';
+import { extractImages, defaults } from '../lib/core';
 
 test.beforeEach((t) => {
 	const input = `

@@ -11,7 +11,7 @@ import {
 	applyGroupBy,
 	runSpritesmith,
 	saveSpritesheets
-} from '../lib';
+} from '../lib/core';
 
 const readFileAsync = Promise.promisify(fs.readFile);
 

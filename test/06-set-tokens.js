@@ -1,7 +1,7 @@
 import test from 'ava';
 import postcss from 'postcss';
 import _ from 'lodash';
-import { defaults, extractImages, setTokens } from '../lib';
+import { defaults, extractImages, setTokens } from '../lib/core';
 
 async function run(input) {
 	let root = postcss.parse(input, { from: '/tmp/test.css' });

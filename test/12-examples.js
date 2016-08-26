@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import Promise from 'bluebird';
 import path from 'path';
 import plugin from '../lib';
-import { updateRule } from '../lib';
+import { updateRule } from '../lib/core';
 
 Promise.promisifyAll(fs);
 

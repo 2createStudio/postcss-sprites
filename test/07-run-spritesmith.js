@@ -3,7 +3,7 @@ import postcss from 'postcss';
 import _ from 'lodash';
 import Promise from 'bluebird';
 import fs from 'fs';
-import { defaults, extractImages, prepareGroupBy, applyGroupBy, runSpritesmith } from '../lib';
+import { defaults, extractImages, prepareGroupBy, applyGroupBy, runSpritesmith } from '../lib/core';
 
 const readFileAsync = Promise.promisify(fs.readFile);
 

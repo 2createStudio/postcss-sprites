@@ -12,7 +12,7 @@ import {
 	mapSpritesheetProps,
 	updateReferences,
 	updateRule
-} from '../lib';
+} from '../lib/core';
 
 const readFileAsync = Promise.promisify(fs.readFile);
 

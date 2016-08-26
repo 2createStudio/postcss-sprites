@@ -8,7 +8,7 @@ import {
 	getColor,
 	makeSpritesheetPath,
 	isToken
-} from '../lib';
+} from '../lib/core';
 
 test('should detect background images in CSS rules', (t) => {
 	const background = '.selector-b { background: url(square.png) no-repeat 0 0; }';
