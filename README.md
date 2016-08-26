@@ -149,7 +149,7 @@ Built-in filters:
 
 > The [algorithm](https://github.com/Ensighten/spritesmith#algorithms).
 
-- Default: `binary-tree``
+- Default: `binary-tree`
 - Required: `false`
 
 ###### spritesmith.padding
@@ -172,6 +172,10 @@ Built-in filters:
 
 - Default: `{}`
 - Required: `false`
+
+###### svgsprite
+
+> A [svg-sprite](https://github.com/jkphl/svg-sprite#configuration-basics) configuration.
 
 ----
 
