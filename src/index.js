@@ -3,7 +3,8 @@ import fs from 'fs-extra';
 import postcss from 'postcss';
 import Promise from 'bluebird';
 import _ from 'lodash';
-import Spritesmith from 'spritesmith';
+import RasterFactory from './factories/raster';
+import VectorFactory from './factories/vector';
 
 /**
  * Wrap with promises.
@@ -21,6 +22,8 @@ const ONE_SPACE = ' ';
 const COMMENT_TOKEN_PREFIX = '@replace|';
 const GROUP_DELIMITER = '.';
 const GROUP_MASK = '*';
+const TYPE_RASTER = 'raster';
+const TYPE_VECTOR = 'vector';
 
 /**
  * Plugin defaults.
@@ -43,6 +46,29 @@ export const defaults = {
 		padding: 0,
 		engineOpts: {},
 		exportOpts: {}
+	},
+	svgsprite: {
+		mode: {
+			css: {
+				dimensions: true,
+				bust: false,
+				render: {
+					css: true
+				}
+			}
+		},
+
+		shape: {
+			id: {
+				generator(name, file) {
+					return file.path;
+				}
+			}
+		},
+
+		svg: {
+			precision: 5
+		}
 	}
 };
 
@@ -119,6 +145,15 @@ export function prepareGroupBy(opts) {
 			return Promise.reject();
 		});
 	}
+
+	// Group by type - 'vector' or 'raster'
+	opts.groupBy.unshift((image) => {
+		if (/^\.svg/.test(path.extname(image.path))) {
+			return Promise.resolve(TYPE_VECTOR);
+		}
+
+		return Promise.resolve(TYPE_RASTER);
+	});
 }
 
 /**
@@ -280,7 +315,6 @@ export function setTokens(root, opts, images) {
  */
 export function runSpritesmith(opts, images) {
 	return new Promise((resolve, reject) => {
-		const spritesmithRunAsync = Promise.promisify(Spritesmith.run, { context: Spritesmith });
 		const promises = _.chain(images)
 			.groupBy((image) => {
 				let tmp = image.groups.map(maskGroup(true));
@@ -289,28 +323,12 @@ export function runSpritesmith(opts, images) {
 				return tmp.join(GROUP_DELIMITER);
 			})
 			.map((images, tmp) => {
-				const config = _.merge({}, opts.spritesmith, {
-					src: _.map(images, 'path')
-				});
-				let ratio;
+				const factory = tmp.indexOf(TYPE_VECTOR) > -1 ? VectorFactory : RasterFactory;
 
-				// Increase padding to handle retina ratio
-				if (areRetinaImages(images)) {
-					ratio = _.chain(images)
-						.flatten('ratio')
-						.uniq()
-						.head()
-						.value().ratio;
-
-					if (ratio) {
-						config.padding = config.padding * ratio;
-					}
-				}
-
-				return spritesmithRunAsync(config)
+				return factory(opts, images)
 					.then((spritesheet) => {
-						tmp = tmp.split(GROUP_DELIMITER);
-						tmp.shift();
+						// Remove the '_', 'raster' or 'vector' prefixes
+						tmp = tmp.split(GROUP_DELIMITER).splice(2);
 
 						spritesheet.groups = tmp.map(maskGroup());
 
@@ -338,9 +356,11 @@ export function runSpritesmith(opts, images) {
  */
 export function saveSpritesheets(opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
+		const { groups, extension } = spritesheet;
+
 		spritesheet.path = _.isFunction(opts.hooks.onSaveSpritesheet)
-			? opts.hooks.onSaveSpritesheet(opts, spritesheet.groups)
-			: makeSpritesheetPath(opts, spritesheet.groups);
+			? opts.hooks.onSaveSpritesheet(opts, groups, extension)
+			: makeSpritesheetPath(opts, groups, extension);
 
 		if (!spritesheet.path) {
 			throw new Error('postcss-sprites: Spritesheet requires a relative path.');
@@ -431,8 +451,8 @@ export function updateReferences(root, opts, images, spritesheets) {
  */
 export function updateRule(rule, token, image) {
 	const { retina, ratio, coords, spriteUrl, spriteWidth, spriteHeight } = image;
-	const posX = coords.x / ratio;
-	const posY = coords.y / ratio;
+	const posX = -1 * Math.abs(coords.x / ratio);
+	const posY = -1 * Math.abs(coords.y / ratio);
 	const sizeX = spriteWidth / ratio;
 	const sizeY = spriteHeight / ratio;
 
@@ -443,7 +463,7 @@ export function updateRule(rule, token, image) {
 
 	const backgroundPositionDecl = postcss.decl({
 		prop: 'background-position',
-		value: `${-1 * posX}px ${-1 * posY}px`
+		value: `${posX}px ${posY}px`
 	});
 
 	rule.insertAfter(token, backgroundImageDecl);
@@ -551,29 +571,21 @@ export function getColor(declValue) {
  * @return {Function}
  */
 export function maskGroup(toggle = false) {
-	const input = new RegExp(`[${toggle ? GROUP_DELIMITER :  GROUP_MASK }]`, 'gi');
+	const input = new RegExp(`[${toggle ? GROUP_DELIMITER : GROUP_MASK }]`, 'gi');
 	const output = toggle ? GROUP_MASK : GROUP_DELIMITER;
 
 	return value => value.replace(input, output);
 }
 
 /**
- * Checkes whether all images are retina.
- * @param  {Array} images
- * @return {Boolean}
- */
-export function areRetinaImages(images) {
-	return _.every(images, image => image.retina);
-}
-
-/**
  * Generate the filepath to the sprite.
  * @param  {Object}  opts
  * @param  {Array}   groups
+ * @param  {String}  extension
  * @return {String}
  */
-export function makeSpritesheetPath(opts, groups = []) {
-	return path.join(opts.spritePath, ['sprite', ...groups, 'png'].join('.'));
+export function makeSpritesheetPath(opts, groups = [], extension) {
+	return path.join(opts.spritePath, ['sprite', ...groups, extension].join('.'));
 }
 
 /**

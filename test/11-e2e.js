@@ -40,6 +40,17 @@ test('basic', async (t) => {
 	return run(inputPath, expectedPath, opts, t);
 });
 
+test('basic SVG', async (t) => {
+	const inputPath = './fixtures/svg-basic/style.css';
+	const expectedPath = './expectations/svg-basic/style.css';
+	const opts = {
+		stylesheetPath: './build/svg-basic/',
+		spritePath: './build/svg-basic/'
+	};
+
+	return run(inputPath, expectedPath, opts, t);
+});
+
 test('retina', async (t) => {
 	const inputPath = './fixtures/retina/style.css';
 	const expectedPath = './expectations/retina/style.css';

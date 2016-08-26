@@ -34,6 +34,23 @@ test('should save spritesheets', async (t) => {
 	t.truthy(fs.statAsync('./build/basic/sprite.png'));
 });
 
+test('should save SVG spritesheets', async (t) => {
+	const cssContents = await readFileAsync('./fixtures/svg-basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './fixtures/svg-basic/style.css' });
+	let images, spritesheets, opts;
+
+	t.context.opts.spritePath = './build/svg-basic';
+
+	prepareGroupBy(t.context.opts);
+	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ opts, images ] = await applyGroupBy(t.context.opts, images);
+	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
+	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+
+	t.deepEqual(spritesheets[0].path, 'build/svg-basic/sprite.svg');
+	t.truthy(fs.statAsync('./build/svg-basic/sprite.svg'));
+});
+
 test('should save spritesheets by groups', async (t) => {
 	const cssContents = await readFileAsync('./fixtures/retina/style.css');
 	const ast = postcss.parse(cssContents, { from: './fixtures/retina/style.css' });
