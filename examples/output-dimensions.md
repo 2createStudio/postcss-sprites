@@ -10,8 +10,8 @@
 
 ```javascript
 var postcss = require('postcss');
-var sprites = require('postcss-sprites').default;
-var updateRule = require('postcss-sprites').updateRule;
+var sprites = require('postcss-sprites');
+var updateRule = require('postcss-sprites/lib/core').updateRule;
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',
