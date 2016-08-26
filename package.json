@@ -1,6 +1,6 @@
 {
   "name": "postcss-sprites",
-  "version": "3.3.0",
+  "version": "4.0.0",
   "description": "Generate spritesheets from stylesheets",
   "main": "lib/index.js",
   "keywords": [
@@ -10,7 +10,8 @@
     "spritesheet",
     "spritesmith",
     "sprite",
-    "png"
+    "png",
+    "svg"
   ],
   "scripts": {
     "test": "./node_modules/.bin/ava test/*.js --verbose --serial",

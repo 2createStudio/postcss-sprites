@@ -1,5 +1,16 @@
 # Change Log
 
+## [4.0.0] - 2016-08-26
+### Added
+- Support for SVG files
+
+### Fixed
+- Support for CommonJS
+- Broken options when the plugin is used in process with a `watch` flag(e.g postcss-cli)
+
+### Changed
+- Params passed to `onSaveSpritesheet` hook
+
 ## [3.3.0] - 2016-07-26
 ### Added
 - The filepath of stylesheet to `Image` object
