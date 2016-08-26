@@ -17,10 +17,10 @@ import {
 /**
  * Plugin registration.
  */
-export default postcss.plugin('postcss-sprites', (opts = {}) => {
+export default postcss.plugin('postcss-sprites', (options = {}) => {
 	return (css, result) => {
 		// Extend defaults
-		opts = _.merge({}, defaults, opts);
+		const opts = _.merge({}, defaults, options);
 
 		// Prepare filter & group functions
 		prepareFilterBy(opts, result);
