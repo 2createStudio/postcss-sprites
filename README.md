@@ -119,7 +119,11 @@ Built-in filters:
 
 ###### hooks.onSaveSpritesheet
 
-> Hook that allows to rewrite the filepath of produced spritesheet.
+> Hook that allows to rewrite the data of produced spritesheet.
+
+> If returned value is string, it is used as filepath value, and if returned value is object, it is used as value which will be merged with current spritesheet data.
+
+> Returned value can also be Promise which should return either string or object.
 
 - Default: `null`
 - Required: `false`
