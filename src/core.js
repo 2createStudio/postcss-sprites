@@ -144,6 +144,7 @@ export function extractImages(root, opts, result) {
 		const image = {
 			path: null,
 			url: null,
+            originalUrl: null,
 			retina: false,
 			ratio: 1,
 			groups: [],
@@ -156,6 +157,7 @@ export function extractImages(root, opts, result) {
 			image.url = getImageUrl(rule.toString());
 
 			if (isImageSupported(image.url)) {
+                image.originalUrl = getImageUrl(rule.toString(), true);
 				// Search for retina images
 				if (opts.retina && isRetinaImage(image.url)) {
 					image.retina = true;
@@ -461,15 +463,17 @@ export function hasImageInRule(rule) {
 /**
  * Extracts the url of image from the given rule.
  * @param  {String} rule
+ * @param  {Boolean} flag
  * @return {String}
  */
-export function getImageUrl(rule) {
+export function getImageUrl(rule, flag) {
 	const matches = /background[^:]*:.*url\(([\S]+)\)/gi.exec(rule);
-
 	if (!matches) {
 		return '';
 	}
-
+    if (flag) {
+        return matches[1];
+    }
 	return matches[1]
 		.replace(/['"]/gi, '') // replace all quotes
 		.replace(/\?.*$/gi, ''); // replace query params
