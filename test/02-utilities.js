@@ -38,21 +38,21 @@ test('should return the url of an image', (t) => {
 	`;
 	const backgroundColor = '.selector-a { background: #fff; }';
 
-	t.deepEqual(getImageUrl(background), 'square.png');
-	t.deepEqual(getImageUrl(backgroundImage), 'circle.png');
-	t.deepEqual(getImageUrl(backgroundBlock), 'square.png');
-	t.deepEqual(getImageUrl(backgroundColor), '');
+	t.deepEqual(getImageUrl(background)[1], 'square.png');
+	t.deepEqual(getImageUrl(backgroundImage)[1], 'circle.png');
+	t.deepEqual(getImageUrl(backgroundBlock)[1], 'square.png');
+	t.deepEqual(getImageUrl(backgroundColor)[1], '');
 });
 
 test('should remove get params', (t) => {
 	const background = '.selector-b { background: url(square.png?v1234) no-repeat 0 0; }';
-	t.deepEqual(getImageUrl(background), 'square.png');
+	t.deepEqual(getImageUrl(background)[1], 'square.png');
 });
 
 
 test('should remove the quotes', (t) => {
 	const background = '.selector-b { background: url("square.png") no-repeat 0 0; }';
-	t.deepEqual(getImageUrl(background), 'square.png');
+	t.deepEqual(getImageUrl(background)[1], 'square.png');
 });
 
 test('should allow only local files', (t) => {

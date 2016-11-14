@@ -191,9 +191,13 @@ Every filter or group function will be called with an ``Image`` object.
 
 > An absolute path to the image - ``/Path/to/your/image.png``
 
+###### originalUrl
+
+> The url found in your stylesheet including the query params - ``../image.png?v1``
+
 ###### url
 
-> The url found in your stylesheet - ``../image.png``
+> A normalized version of the original url - ``../image.png``
 
 ###### ratio
 

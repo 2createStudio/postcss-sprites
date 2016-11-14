@@ -144,6 +144,7 @@ export function extractImages(root, opts, result) {
 		const image = {
 			path: null,
 			url: null,
+			originalUrl: null,
 			retina: false,
 			ratio: 1,
 			groups: [],
@@ -153,7 +154,10 @@ export function extractImages(root, opts, result) {
 
 		// Manipulate only rules with image in them
 		if (hasImageInRule(rule.toString())) {
-			image.url = getImageUrl(rule.toString());
+			const imageUrl = getImageUrl(rule.toString());
+
+			image.originalUrl = imageUrl[0];
+			image.url = imageUrl[1];
 
 			if (isImageSupported(image.url)) {
 				// Search for retina images
@@ -234,7 +238,7 @@ export function setTokens(root, opts, images) {
 
 			// Manipulate only rules with image in them
 			if (hasImageInRule(ruleStr)) {
-				url = getImageUrl(ruleStr);
+				url = getImageUrl(ruleStr)[1];
 				image = _.find(images, { url });
 
 				if (image) {
@@ -461,18 +465,21 @@ export function hasImageInRule(rule) {
 /**
  * Extracts the url of image from the given rule.
  * @param  {String} rule
- * @return {String}
+ * @return {Array}
  */
 export function getImageUrl(rule) {
 	const matches = /background[^:]*:.*url\(([\S]+)\)/gi.exec(rule);
+	let original = '';
+	let normalized = '';
 
-	if (!matches) {
-		return '';
+	if (matches) {
+		original = matches[1];
+		normalized = original
+			.replace(/['"]/gi, '') // replace all quotes
+			.replace(/\?.*$/gi, ''); // replace query params
 	}
 
-	return matches[1]
-		.replace(/['"]/gi, '') // replace all quotes
-		.replace(/\?.*$/gi, ''); // replace query params
+	return [original, normalized];
 }
 
 /**
