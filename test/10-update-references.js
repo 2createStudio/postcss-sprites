@@ -39,6 +39,24 @@ test('should update CSS declarations', async (t) => {
 	t.deepEqual(root.toString(), expected);
 });
 
+test('should update CSS declarations with relative paths', async (t) => {
+	const input = await readFileAsync('./fixtures/relative/style.css');
+	const expected = await readFileAsync('./expectations/relative/style.css', 'utf8');
+	const ast = postcss.parse(input, { from: './fixtures/relative/style.css' });
+	let images, spritesheets, opts, root;
+
+	t.context.opts.spritePath = './build/relative';
+
+	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
+	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
+	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
+	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
+
+	t.deepEqual(root.toString(), expected);
+});
+
 test('should use function provided by onUpdateRule hook', async (t) => {
 	const input = await readFileAsync('./fixtures/basic/style.css');
 	const expected = await readFileAsync('./expectations/basic-on-update-rule-hook/style.css', 'utf8');
