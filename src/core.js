@@ -30,7 +30,7 @@ const TYPE_VECTOR = 'vector';
  */
 export const defaults = {
 	basePath: './',
-	stylesheetPath: './',
+	stylesheetPath: null,
 	spritePath: './',
 	relativeTo: 'file',
 	filterBy: [],
@@ -403,7 +403,7 @@ export function updateReferences(root, opts, images, spritesheets) {
 			// Update the rule with background declarations
 			if (image) {
 				// Generate CSS url to sprite
-				image.spriteUrl = path.relative(opts.stylesheetPath, image.spritePath);
+				image.spriteUrl = path.relative(opts.stylesheetPath || path.dirname(root.source.input.file), image.spritePath);
 				image.spriteUrl = image.spriteUrl.split(path.sep).join('/');
 
 				// Update rule

@@ -86,6 +86,16 @@ test('absolute path', async (t) => {
 	return run(inputPath, expectedPath, opts, t);
 });
 
+test('relative path', async (t) => {
+	const inputPath = './fixtures/relative/style.css';
+	const expectedPath = './expectations/relative/style.css';
+	const opts = {
+		spritePath: './build/relative/'
+	};
+
+	return run(inputPath, expectedPath, opts, t);
+});
+
 test('filter by', async (t) => {
 	const inputPath = './fixtures/filter-by/style.css';
 	const expectedPath = './expectations/filter-by/style.css';
