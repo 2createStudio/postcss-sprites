@@ -1,5 +1,11 @@
 # Change Log
 
+## [4.1.0] - 2016-11-22
+### Added
+- Better support for modular stylesheets
+- `originalUrl` property to `Image` object
+- Support for Promises in `onSaveSpritesheet` hook
+
 ## [4.0.0] - 2016-08-26
 ### Added
 - Support for SVG files
