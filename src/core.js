@@ -328,17 +328,27 @@ export function runSpritesmith(opts, images) {
  */
 export function saveSpritesheets(opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
-		spritesheet.path = _.isFunction(opts.hooks.onSaveSpritesheet)
-			? opts.hooks.onSaveSpritesheet(opts, spritesheet)
-			: makeSpritesheetPath(opts, spritesheet);
+		return (
+				_.isFunction(opts.hooks.onSaveSpritesheet) ?
+				Promise.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet)) :
+				Promise.resolve(makeSpritesheetPath(opts, spritesheet))
+			)
+			.then(( res ) => {
 
-		if (!spritesheet.path) {
-			throw new Error('postcss-sprites: Spritesheet requires a relative path.');
-		}
+				if ( _.isString(res) ) {
+					spritesheet.path = res;
+				} else {
+					_.assign(spritesheet, res);
+				}
 
-		spritesheet.path = spritesheet.path.replace(/\\/g, '/');
+				if (!spritesheet.path) {
+					throw new Error('postcss-sprites: Spritesheet requires a relative path.');
+				}
 
-		return fs.outputFileAsync(spritesheet.path, spritesheet.image);
+				spritesheet.path = spritesheet.path.replace(/\\/g, '/');
+
+				return fs.outputFileAsync(spritesheet.path, spritesheet.image);
+			});
 	}).then(spritesheets => {
 		return [opts, images, spritesheets];
 	});

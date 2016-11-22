@@ -105,3 +105,21 @@ test('should throw error if path is empty', async (t) => {
 
 	t.throws(saveSpritesheets(images, t.context.opts, spritesheets));
 });
+
+test('should use Promise result provided by book', async (t) => {
+	const cssContents = await readFileAsync('./fixtures/basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './fixtures/basic/style.css' });
+	let images, spritesheets, opts;
+
+	t.context.opts.spritePath = './build/on-save-hook/';
+	t.context.opts.hooks.onSaveSpritesheet = (pluginOpts, spritesheetGroups) => {
+		return new Promise(( resolve ) => setTimeout(() => resolve(Promise.resolve(path.join(pluginOpts.spritePath, 'custom-name.png'))), 0));
+	}
+
+	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
+	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+
+	t.deepEqual(spritesheets[0].path, 'build/on-save-hook/custom-name.png');
+	t.truthy(fs.statAsync('./build/on-save-hook/custom-name.png'));
+});
