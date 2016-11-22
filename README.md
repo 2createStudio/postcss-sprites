@@ -48,10 +48,10 @@ See [PostCSS](https://github.com/postcss/postcss) docs for examples for your env
 
 ###### stylesheetPath
 
-> Relative path to the folder that will keep your output stylesheet(s).
+> Relative path to the folder that will keep your output stylesheet(s). If it's null the path of CSS file will be used.
 
-- Default: `./`
-- Required: `true`
+- Default: null
+- Required: `false`
 
 ###### spritePath
 
