@@ -1,5 +1,5 @@
-.selector-a { background-image: url(sprite.png); background-position: 0px 0px; }
-.selector-b { background-image: url(sprite.png); background-position: -25px 0px; }
+.selector-a { background-image: url(sprite.png); background-position: 0px 0px; background-size: 50px 25px; }
+.selector-b { background-image: url(sprite.png); background-position: -25px 0px; background-size: 50px 25px; }
 
 @media (max-width: 767px) {
 	.selector-a { background-image: url(sprite.@2x.png); background-position: 0px 0px; background-size: 50px 25px; }

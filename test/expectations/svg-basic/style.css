@@ -1,2 +1,2 @@
-.selector-a { background-image: url(sprite.svg); background-position: 0px 0px; }
-.selector-b { background-image: url(sprite.svg); background-position: -600px 0px; }
+.selector-a { background-image: url(sprite.svg); background-position: 0px 0px; background-size: 962px 600px; }
+.selector-b { background-image: url(sprite.svg); background-position: -600px 0px; background-size: 962px 600px; }

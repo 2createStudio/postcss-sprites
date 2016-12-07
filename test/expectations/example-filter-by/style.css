@@ -1,4 +1,4 @@
-.selector-a { background-image: url(sprite.png); background-position: 0px 0px; }
-.selector-b { background-image: url(sprite.png); background-position: -25px 0px; }
+.selector-a { background-image: url(sprite.png); background-position: 0px 0px; background-size: 50px 25px; }
+.selector-b { background-image: url(sprite.png); background-position: -25px 0px; background-size: 50px 25px; }
 .selector-c { background: url(a.jpg) no-repeat 0 0; }
 .selector-d { background: url(b.jpg) no-repeat 0 0; }

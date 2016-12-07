@@ -449,14 +449,12 @@ export function updateRule(rule, token, image) {
 	rule.insertAfter(token, backgroundImageDecl);
 	rule.insertAfter(backgroundImageDecl, backgroundPositionDecl);
 
-	if (retina) {
-		const backgroundSizeDecl = postcss.decl({
-			prop: 'background-size',
-			value: `${sizeX}px ${sizeY}px`
-		});
+	const backgroundSizeDecl = postcss.decl({
+		prop: 'background-size',
+		value: `${sizeX}px ${sizeY}px`
+	});
 
-		rule.insertAfter(backgroundPositionDecl, backgroundSizeDecl);
-	}
+	rule.insertAfter(backgroundPositionDecl, backgroundSizeDecl);
 }
 
 /////////////////////////
