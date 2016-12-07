@@ -1,5 +1,10 @@
 # Change Log
 
+## [4.1.1] - 2016-12-7
+### Changed
+- Apply `background-size` to all generated sprites
+- Use a hash instead of real path for `id` attribute in SVG sprites
+
 ## [4.1.0] - 2016-11-22
 ### Added
 - Better support for modular stylesheets
