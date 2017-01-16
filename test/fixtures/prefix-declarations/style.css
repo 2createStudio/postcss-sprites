@@ -1,0 +1,2 @@
+.selector-a { background-image: url(circle.png); -webkit-background-size: cover; -moz-background-size: cover; }
+.selector-b { background-image: url(square.png); -o-background-size: cover; background-size: cover; }

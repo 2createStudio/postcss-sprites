@@ -85,3 +85,22 @@ test('should use function provided by onUpdateRule hook', async (t) => {
 
 	t.deepEqual(root.toString(), expected);
 });
+
+test('should remove prefix declarations', async (t) => {
+	const input = await readFileAsync('./fixtures/prefix-declarations/style.css');
+	const expected = await readFileAsync('./expectations/prefix-declarations/style.css', 'utf8');
+	const ast = postcss.parse(input, { from: './fixtures/prefix-declarations/style.css' });
+	let images, spritesheets, opts, root;
+
+	t.context.opts.spritePath = './build/prefix-declarations';
+	t.context.opts.stylesheetPath = './build/prefix-declarations';
+
+	[ opts, images ] = await extractImages(ast, t.context.opts);
+	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
+	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
+	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
+	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
+
+	t.deepEqual(root.toString(), expected);
+})
