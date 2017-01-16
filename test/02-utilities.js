@@ -44,6 +44,16 @@ test('should return the url of an image', (t) => {
 	t.deepEqual(getImageUrl(backgroundColor)[1], '');
 });
 
+test('shoud return the url of an image in compressed CSS rules', (t) => {
+	const background = '.selector-a{background:url(square.png) no-repeat 0 0;transform:scale(0.5)}';
+	const backgroundImage = '.selector-a{background-image:url(square.png);transform:scale(0.5)}';
+	const backgroundColor = '.selector-a{background:#fff;transform:scale(0.5)}';
+
+	t.deepEqual(getImageUrl(background)[1], 'square.png');
+	t.deepEqual(getImageUrl(backgroundImage)[1], 'square.png');
+	t.deepEqual(getImageUrl(backgroundColor)[1], '');
+});
+
 test('should remove get params', (t) => {
 	const background = '.selector-b { background: url(square.png?v1234) no-repeat 0 0; }';
 	t.deepEqual(getImageUrl(background)[1], 'square.png');

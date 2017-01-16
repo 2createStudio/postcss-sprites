@@ -476,7 +476,7 @@ export function hasImageInRule(rule) {
  * @return {Array}
  */
 export function getImageUrl(rule) {
-	const matches = /background[^:]*:.*url\(([\S]+)\)/gi.exec(rule);
+	const matches = /url(?:\(['"]?)(.*?)(?:['"]?\))/gi.exec(rule);
 	let original = '';
 	let normalized = '';
 
