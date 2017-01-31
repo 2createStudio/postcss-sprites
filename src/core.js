@@ -326,7 +326,7 @@ export function runSpritesmith(opts, images) {
  * @param  {Array}  spritesheets
  * @return {Promise}
  */
-export function saveSpritesheets(opts, images, spritesheets) {
+export function saveSpritesheets(css, opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
 		return (
 				_.isFunction(opts.hooks.onSaveSpritesheet) ?
