@@ -331,7 +331,7 @@ export function saveSpritesheets(root, opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
 		return (
 				_.isFunction(opts.hooks.onSaveSpritesheet) ?
-				Promise.resolve(opts.hooks.onSaveSpritesheet(root, opts, spritesheet)) :
+				Promise.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet, root)) :
 				Promise.resolve(makeSpritesheetPath(opts, spritesheet))
 			)
 			.then(( res ) => {
