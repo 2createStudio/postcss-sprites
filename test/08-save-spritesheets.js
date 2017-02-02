@@ -28,7 +28,7 @@ test('should save spritesheets', async (t) => {
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ root, opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 
 	t.deepEqual(spritesheets[0].path, 'build/basic/sprite.png');
 	t.truthy(fs.statAsync('./build/basic/sprite.png'));
@@ -45,7 +45,7 @@ test('should save SVG spritesheets', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ root, opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 
 	t.deepEqual(spritesheets[0].path, 'build/svg-basic/sprite.svg');
 	t.truthy(fs.statAsync('./build/svg-basic/sprite.svg'));
@@ -64,7 +64,7 @@ test('should save spritesheets by groups', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ root, opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 
 	t.deepEqual(spritesheets[0].path, 'build/retina/sprite.png');
 	t.deepEqual(spritesheets[1].path, 'build/retina/sprite.@2x.png');
@@ -84,7 +84,7 @@ test('should use path provided by book', async (t) => {
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ root, opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 
 	t.deepEqual(spritesheets[0].path, 'build/on-save-hook/custom-name.png');
 	t.truthy(fs.statAsync('./build/on-save-hook/custom-name.png'));
@@ -103,7 +103,7 @@ test('should throw error if path is empty', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 
-	t.throws(saveSpritesheets(images, t.context.opts, spritesheets));
+	t.throws(saveSpritesheets(root, images, t.context.opts, spritesheets));
 });
 
 test('should use Promise result provided by book', async (t) => {
@@ -118,7 +118,7 @@ test('should use Promise result provided by book', async (t) => {
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ root, opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 
 	t.deepEqual(spritesheets[0].path, 'build/on-save-hook/custom-name.png');
 	t.truthy(fs.statAsync('./build/on-save-hook/custom-name.png'));
