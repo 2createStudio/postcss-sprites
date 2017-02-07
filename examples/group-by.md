@@ -18,7 +18,7 @@ var opts = {
 	spritePath: './css/images/',
 	groupBy: function(image) {
 		if (image.url.indexOf('shapes') === -1) {
-			return Promise.reject();
+			return Promise.reject(new Error('Not a shape image.'));
 		}
 
 		return Promise.resolve('shapes');

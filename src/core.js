@@ -110,7 +110,7 @@ export function prepareGroupBy(opts) {
 				return Promise.resolve(`@${image.ratio}x`);
 			}
 
-			return Promise.reject();
+			return Promise.reject(new Error('Not a retina image.'));
 		});
 	}
 
