@@ -18,7 +18,7 @@ var opts = {
 	hooks: {
 		onSaveSpritesheet: function(opts, spritesheet) {
 			// We assume that the groups is not an empty array
-			var filenameChunks = spritesheet.groups.slice().push('png');
+			var filenameChunks = spritesheet.groups.concat('png');
 			return path.join(opts.spritePath, filenameChunks.join('.'));
 		}
 	}
