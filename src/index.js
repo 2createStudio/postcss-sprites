@@ -32,7 +32,7 @@ export default postcss.plugin('postcss-sprites', (options = {}) => {
 			.spread((opts, images) => applyGroupBy(opts, images))
 			.spread((opts, images) => setTokens(css, opts, images))
 			.spread((root, opts, images) => runSpritesmith(opts, images))
-			.spread((opts, images, spritesheets) => saveSpritesheets(opts, images, spritesheets))
+			.spread((opts, images, spritesheets) => saveSpritesheets(css, opts, images, spritesheets))
 			.spread((opts, images, spritesheets) => mapSpritesheetProps(opts, images, spritesheets))
 			.spread((opts, images, spritesheets) => updateReferences(css, opts, images, spritesheets))
 			.spread((root, opts, images, spritesheets) => {

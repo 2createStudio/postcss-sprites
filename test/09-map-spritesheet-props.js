@@ -28,7 +28,7 @@ test('should add coords & spritePath to every image', async (t) => {
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 
 	t.deepEqual(images[0].spritePath, 'build/basic/sprite.png');
@@ -46,7 +46,7 @@ test('should add coords & spritePath to every SVG image', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images ] = await applyGroupBy(t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 
 	t.deepEqual(images[0].spritePath, 'build/svg-basic/sprite.svg');

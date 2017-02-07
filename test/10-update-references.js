@@ -32,7 +32,7 @@ test('should update CSS declarations', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
 
@@ -50,7 +50,7 @@ test('should update CSS declarations with relative paths', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
 
@@ -79,7 +79,7 @@ test('should use function provided by onUpdateRule hook', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
-	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
+	[ opts, images, spritesheets ] = await saveSpritesheets(root, t.context.opts, images, spritesheets);
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 	[ root, opts, images, spritesheets ] = await updateReferences(root, t.context.opts, images, spritesheets);
 

@@ -321,16 +321,17 @@ export function runSpritesmith(opts, images) {
 
 /**
  * Saves the spritesheets to the disk.
+ * @param  {Node}   root
  * @param  {Object} opts
  * @param  {Array}  images
  * @param  {Array}  spritesheets
  * @return {Promise}
  */
-export function saveSpritesheets(opts, images, spritesheets) {
+export function saveSpritesheets(root, opts, images, spritesheets) {
 	return Promise.each(spritesheets, (spritesheet) => {
 		return (
 				_.isFunction(opts.hooks.onSaveSpritesheet) ?
-				Promise.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet)) :
+				Promise.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet, root)) :
 				Promise.resolve(makeSpritesheetPath(opts, spritesheet))
 			)
 			.then(( res ) => {
