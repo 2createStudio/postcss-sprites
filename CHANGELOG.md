@@ -1,5 +1,14 @@
 # Change Log
 
+## [4.2.0] - 2017-02-07
+### Added
+- [`verbose`](https://github.com/2createStudio/postcss-sprites#verbose) option
+
+### Fixed
+- Typos in examples
+- Rejected promises without error
+- Incorrect extraction of the urls
+
 ## [4.1.1] - 2016-12-7
 ### Changed
 - Apply `background-size` to all generated sprites
