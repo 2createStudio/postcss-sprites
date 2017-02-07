@@ -16,7 +16,7 @@ import {
 const readFileAsync = Promise.promisify(fs.readFile);
 
 test.beforeEach((t) => {
-	t.context.opts = _.merge({}, defaults);
+	t.context.opts = _.merge({ logger() {} }, defaults);
 });
 
 test('should add coords & spritePath to every image', async (t) => {

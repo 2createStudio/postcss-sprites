@@ -5,7 +5,7 @@ import { defaults, extractImages, setTokens } from '../lib/core';
 
 async function run(input) {
 	let root = postcss.parse(input, { from: '/tmp/test.css' });
-	let opts = _.merge({}, defaults);
+	let opts = _.merge({ logger() {} }, defaults);
 	let images;
 
 	[ opts, images ] = await extractImages(root, opts);

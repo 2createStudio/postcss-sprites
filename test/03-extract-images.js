@@ -11,7 +11,7 @@ test.beforeEach((t) => {
 	`;
 
 	t.context.ast = postcss.parse(input, { from: '/tmp/test.css' });
-	t.context.opts = Object.assign({}, defaults);
+	t.context.opts = Object.assign({ logger() {} }, defaults);
 });
 
 test('should convert rules to image objects', async (t) => {

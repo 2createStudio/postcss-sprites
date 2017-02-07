@@ -16,7 +16,7 @@ import {
 const readFileAsync = Promise.promisify(fs.readFile);
 
 test.beforeEach((t) => {
-	t.context.opts = _.merge({}, defaults);
+	t.context.opts = _.merge({ logger() {} }, defaults);
 });
 
 test('should save spritesheets', async (t) => {
@@ -103,7 +103,7 @@ test('should throw error if path is empty', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 
-	t.throws(saveSpritesheets(images, t.context.opts, spritesheets));
+	t.throws(saveSpritesheets(t.context.opts, images, spritesheets));
 });
 
 test('should use Promise result provided by book', async (t) => {

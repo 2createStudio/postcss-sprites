@@ -10,7 +10,7 @@ test.beforeEach((t) => {
 		.selector-b { background: url(square@2x.png) no-repeat 0 0; }
 	`;
 
-	t.context.opts = _.merge({}, defaults);
+	t.context.opts = _.merge({ logger() {} }, defaults);
 	t.context.ast = postcss.parse(input, { from: '/tmp/test.css' });
 });
 

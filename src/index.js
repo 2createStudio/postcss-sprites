@@ -11,7 +11,8 @@ import {
 	runSpritesmith,
 	saveSpritesheets,
 	mapSpritesheetProps,
-	updateReferences
+	updateReferences,
+	createLogger
 } from './core';
 
 /**
@@ -21,6 +22,9 @@ export default postcss.plugin('postcss-sprites', (options = {}) => {
 	return (css, result) => {
 		// Extend defaults
 		const opts = _.merge({}, defaults, options);
+
+		// Setup the logger
+		opts.logger = createLogger(opts.verbose);
 
 		// Prepare filter & group functions
 		prepareFilterBy(opts, result);
@@ -36,7 +40,7 @@ export default postcss.plugin('postcss-sprites', (options = {}) => {
 			.spread((opts, images, spritesheets) => mapSpritesheetProps(opts, images, spritesheets))
 			.spread((opts, images, spritesheets) => updateReferences(css, opts, images, spritesheets))
 			.spread((root, opts, images, spritesheets) => {
-				result.warn(`${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
+				opts.logger(`${spritesheets.length} ${spritesheets.length > 1 ? 'spritesheets' : 'spritesheet'} generated.`);
 			})
 			.catch((err) => {
 				console.error(`postcss-sprites: An error occurred while processing files - ${err.message}`);

@@ -3,6 +3,7 @@ import fs from 'fs-extra';
 import postcss from 'postcss';
 import Promise from 'bluebird';
 import _ from 'lodash';
+import debug from 'debug';
 import RasterFactory from './factories/raster';
 import VectorFactory from './factories/vector';
 
@@ -69,7 +70,8 @@ export const defaults = {
 		svg: {
 			precision: 5
 		}
-	}
+	},
+	verbose: false
 };
 
 /**
@@ -87,8 +89,11 @@ export function prepareFilterBy(opts, result) {
 	opts.filterBy.unshift(image => {
 		return fs.statAsync(image.path)
 			.catch(() => {
-				result.warn(`skip ${image.url} because doesn't exist.`);
-				throw new Error(`Skip ${image.url} because doesn't exist.`);
+				const message = `Skip ${image.url} because doesn't exist.`;
+
+				opts.logger(message);
+
+				throw new Error(message);
 			});
 	});
 }
@@ -135,6 +140,8 @@ export function prepareGroupBy(opts) {
 export function extractImages(root, opts, result) {
 	let images = [];
 
+	opts.logger('Extracting the images...');
+
 	// Search for background & background image declartions
 	root.walkRules((rule) => {
 		const styleFilePath = opts.relativeTo === RELATIVE_TO_RULE ? rule.source.input.file : root.source.input.file;
@@ -175,7 +182,7 @@ export function extractImages(root, opts, result) {
 
 				images.push(image);
 			} else {
-				result.warn(`skip ${image.url} because isn't supported.`);
+				opts.logger(`Skip ${image.url} because isn't supported.`)
 			}
 		}
 	});
@@ -193,6 +200,8 @@ export function extractImages(root, opts, result) {
  * @return {Promise}
  */
 export function applyFilterBy(opts, images) {
+	opts.logger('Applying the filters...');
+
 	return Promise.reduce(opts.filterBy, (images, filterFn) => {
 		return Promise.filter(images, (image) => {
 			return filterFn(image)
@@ -209,6 +218,8 @@ export function applyFilterBy(opts, images) {
  * @return {Promise}
  */
 export function applyGroupBy(opts, images) {
+	opts.logger('Applying the groups...');
+
 	return Promise.reduce(opts.groupBy, (images, groupFn) => {
 		return Promise.map(images, (image) => {
 			return groupFn(image)
@@ -286,6 +297,8 @@ export function setTokens(root, opts, images) {
  * @return {Promise}
  */
 export function runSpritesmith(opts, images) {
+	opts.logger('Generating the spritesheets...');
+
 	return new Promise((resolve, reject) => {
 		const promises = _.chain(images)
 			.groupBy((image) => {
@@ -327,6 +340,8 @@ export function runSpritesmith(opts, images) {
  * @return {Promise}
  */
 export function saveSpritesheets(opts, images, spritesheets) {
+	opts.logger('Saving the spritesheets...');
+
 	return Promise.each(spritesheets, (spritesheet) => {
 		return (
 				_.isFunction(opts.hooks.onSaveSpritesheet) ?
@@ -334,15 +349,14 @@ export function saveSpritesheets(opts, images, spritesheets) {
 				Promise.resolve(makeSpritesheetPath(opts, spritesheet))
 			)
 			.then(( res ) => {
+				if (!res) {
+					throw new Error('postcss-sprites: Spritesheet requires a relative path.');
+				}
 
 				if ( _.isString(res) ) {
 					spritesheet.path = res;
 				} else {
 					_.assign(spritesheet, res);
-				}
-
-				if (!spritesheet.path) {
-					throw new Error('postcss-sprites: Spritesheet requires a relative path.');
 				}
 
 				spritesheet.path = spritesheet.path.replace(/\\/g, '/');
@@ -392,6 +406,8 @@ export function mapSpritesheetProps(opts, images, spritesheets) {
  * @return {Promise}
  */
 export function updateReferences(root, opts, images, spritesheets) {
+	opts.logger('Replacing the references...');
+
 	root.walkComments((comment) => {
 		let rule, image;
 
@@ -576,4 +592,18 @@ export function makeSpritesheetPath(opts, { groups, extension }) {
  */
 export function isToken(commentValue) {
 	return commentValue.indexOf(COMMENT_TOKEN_PREFIX) > -1;
+}
+
+/**
+ * Create a logger that can be disabled in runtime.
+ *
+ * @param  {Boolean} enabled
+ * @return {Function}
+ */
+export function createLogger(enabled) {
+	if (enabled) {
+		debug.enable('postcss-sprites');
+	}
+
+	return debug('postcss-sprites');
 }

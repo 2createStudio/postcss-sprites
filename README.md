@@ -181,6 +181,13 @@ Built-in filters:
 
 > A [svg-sprite](https://github.com/jkphl/svg-sprite#configuration-basics) configuration.
 
+###### verbose
+
+> Prints the plugin output to the console.
+
+- Default: `false`
+- Required: `false`
+
 ----
 
 ### The Image

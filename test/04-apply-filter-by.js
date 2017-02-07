@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { defaults, prepareFilterBy, extractImages, applyFilterBy } from '../lib/core';
 
 test.beforeEach(async (t) => {
-	t.context.opts = _.merge({}, defaults);
+	t.context.opts = _.merge({ logger() {} }, defaults);
 
 	const input = `
 		.selector-a { background-image: url(circle.png); }
