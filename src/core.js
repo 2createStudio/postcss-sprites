@@ -254,7 +254,7 @@ export function setTokens(root, opts, images) {
 
 				if (image) {
 					// Remove all necessary background declarations
-					rule.walkDecls(/^background-(repeat|size|position)$/, decl => decl.remove());
+					rule.walkDecls(/^(-webkit-|-moz-|-o-)*background-(repeat|size|position)$/, decl => decl.remove());
 
 					// Extract color to background-color property
 					if (decl.prop === BACKGROUND) {
