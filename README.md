@@ -256,6 +256,7 @@ Every filter or group function will be called with an ``Image`` object.
 - [Skip Prefix](examples/skip-prefix.md)
 - [Responsive Spritesheets](examples/responsive-spritesheets.md)
 - [Relative To Rule](examples/relative-to-rule.md)
+- [Webpack Hot Load](examples/webpack-hot-load.md)
 
 ----
 

@@ -15,15 +15,20 @@ var updateRule = require('postcss-sprites/lib/core').updateRule;
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',
+	retina: true,
 	hooks: {
 		onUpdateRule: function(rule, token, image) {
 			// Use built-in logic for background-image & background-position
 			updateRule(rule, token, image);
 
 			['width', 'height'].forEach(function(prop) {
+				var value = image.coords[prop];
+				if (image.retina) {
+					value /= image.ratio;
+				}
 				rule.insertAfter(rule.last, postcss.decl({
 					prop: prop,
-					value: image.coords[prop] + 'px'
+					value: value + 'px'
 				}));
 			});
 		}
