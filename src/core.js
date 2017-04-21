@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs-extra';
-import postcss from 'postcss';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import debug from 'debug';
@@ -261,26 +260,24 @@ export function setTokens(root, opts, images) {
 						color = getColor(decl.value);
 
 						if (color) {
-							backgroundColorDecl = postcss.decl({
+							decl.cloneAfter({
 								prop: 'background-color',
-								value: getColor(decl.value)
-							});
-							backgroundColorDecl.raws.before = ONE_SPACE;
-
-							rule.append(backgroundColorDecl);
+								value: color
+							}).raws.before = ONE_SPACE;
 						}
 					}
 
 					// Replace with comment token
-					if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
-						commentDecl = postcss.comment({
+					if (_.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
+						commentDecl = decl.cloneAfter({
+							type: 'comment',
 							text: image.url
 						});
 
 						commentDecl.raws.left = `${ONE_SPACE}${COMMENT_TOKEN_PREFIX}`;
 						image.token = commentDecl.toString();
 
-						decl.replaceWith(commentDecl);
+						decl.remove();
 					}
 				}
 			}
@@ -452,25 +449,17 @@ export function updateRule(rule, token, image) {
 	const sizeX = spriteWidth / ratio;
 	const sizeY = spriteHeight / ratio;
 
-	const backgroundImageDecl = postcss.decl({
+	token.cloneAfter({
+		type: 'decl',
 		prop: 'background-image',
 		value: `url(${spriteUrl})`
-	});
-
-	const backgroundPositionDecl = postcss.decl({
+	}).cloneAfter({
 		prop: 'background-position',
 		value: `${posX}px ${posY}px`
-	});
-
-	rule.insertAfter(token, backgroundImageDecl);
-	rule.insertAfter(backgroundImageDecl, backgroundPositionDecl);
-
-	const backgroundSizeDecl = postcss.decl({
+	}).cloneAfter({
 		prop: 'background-size',
 		value: `${sizeX}px ${sizeY}px`
 	});
-
-	rule.insertAfter(backgroundPositionDecl, backgroundSizeDecl);
 }
 
 /////////////////////////
