@@ -1,6 +1,5 @@
 import path from 'path';
 import fs from 'fs-extra';
-import postcss from 'postcss';
 import Promise from 'bluebird';
 import _ from 'lodash';
 import debug from 'debug';
@@ -247,42 +246,45 @@ export function setTokens(root, opts, images) {
 			const ruleStr = rule.toString();
 			let url, image, color, backgroundColorDecl, commentDecl;
 
+			if (!hasImageInRule(ruleStr)) {
+				return;
+			}
+
 			// Manipulate only rules with image in them
-			if (hasImageInRule(ruleStr)) {
-				url = getImageUrl(ruleStr)[1];
-				image = _.find(images, { url });
 
-				if (image) {
-					// Remove all necessary background declarations
-					rule.walkDecls(/^background-(repeat|size|position)$/, decl => decl.remove());
+			url = getImageUrl(ruleStr)[1];
+			image = _.find(images, { url });
 
-					// Extract color to background-color property
-					if (decl.prop === BACKGROUND) {
-						color = getColor(decl.value);
+			if (!image) {
+				return;
+			}
 
-						if (color) {
-							backgroundColorDecl = postcss.decl({
-								prop: 'background-color',
-								value: getColor(decl.value)
-							});
-							backgroundColorDecl.raws.before = ONE_SPACE;
+			// Remove all necessary background declarations
+			rule.walkDecls(/^background-(repeat|size|position)$/, decl => decl.remove());
 
-							rule.append(backgroundColorDecl);
-						}
-					}
+			// Extract color to background-color property
+			if (decl.prop === BACKGROUND) {
+				color = getColor(decl.value);
 
-					// Replace with comment token
-					if (decl.prop === BACKGROUND || decl.prop === BACKGROUND_IMAGE) {
-						commentDecl = postcss.comment({
-							text: image.url
-						});
-
-						commentDecl.raws.left = `${ONE_SPACE}${COMMENT_TOKEN_PREFIX}`;
-						image.token = commentDecl.toString();
-
-						decl.replaceWith(commentDecl);
-					}
+				if (color) {
+					decl.cloneAfter({
+						prop: 'background-color',
+						value: color
+					}).raws.before = ONE_SPACE;
 				}
+			}
+
+			// Replace with comment token
+			if (_.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
+				commentDecl = decl.cloneAfter({
+					type: 'comment',
+					text: image.url
+				});
+
+				commentDecl.raws.left = `${ONE_SPACE}${COMMENT_TOKEN_PREFIX}`;
+				image.token = commentDecl.toString();
+
+				decl.remove();
 			}
 		});
 
@@ -452,25 +454,17 @@ export function updateRule(rule, token, image) {
 	const sizeX = spriteWidth / ratio;
 	const sizeY = spriteHeight / ratio;
 
-	const backgroundImageDecl = postcss.decl({
+	token.cloneAfter({
+		type: 'decl',
 		prop: 'background-image',
 		value: `url(${spriteUrl})`
-	});
-
-	const backgroundPositionDecl = postcss.decl({
+	}).cloneAfter({
 		prop: 'background-position',
 		value: `${posX}px ${posY}px`
-	});
-
-	rule.insertAfter(token, backgroundImageDecl);
-	rule.insertAfter(backgroundImageDecl, backgroundPositionDecl);
-
-	const backgroundSizeDecl = postcss.decl({
+	}).cloneAfter({
 		prop: 'background-size',
 		value: `${sizeX}px ${sizeY}px`
 	});
-
-	rule.insertAfter(backgroundPositionDecl, backgroundSizeDecl);
 }
 
 /////////////////////////
