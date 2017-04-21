@@ -246,40 +246,45 @@ export function setTokens(root, opts, images) {
 			const ruleStr = rule.toString();
 			let url, image, color, backgroundColorDecl, commentDecl;
 
+			if (!hasImageInRule(ruleStr)) {
+				return;
+			}
+
 			// Manipulate only rules with image in them
-			if (hasImageInRule(ruleStr)) {
-				url = getImageUrl(ruleStr)[1];
-				image = _.find(images, { url });
 
-				if (image) {
-					// Remove all necessary background declarations
-					rule.walkDecls(/^background-(repeat|size|position)$/, decl => decl.remove());
+			url = getImageUrl(ruleStr)[1];
+			image = _.find(images, { url });
 
-					// Extract color to background-color property
-					if (decl.prop === BACKGROUND) {
-						color = getColor(decl.value);
+			if (!image) {
+				return;
+			}
 
-						if (color) {
-							decl.cloneAfter({
-								prop: 'background-color',
-								value: color
-							}).raws.before = ONE_SPACE;
-						}
-					}
+			// Remove all necessary background declarations
+			rule.walkDecls(/^background-(repeat|size|position)$/, decl => decl.remove());
 
-					// Replace with comment token
-					if (_.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
-						commentDecl = decl.cloneAfter({
-							type: 'comment',
-							text: image.url
-						});
+			// Extract color to background-color property
+			if (decl.prop === BACKGROUND) {
+				color = getColor(decl.value);
 
-						commentDecl.raws.left = `${ONE_SPACE}${COMMENT_TOKEN_PREFIX}`;
-						image.token = commentDecl.toString();
-
-						decl.remove();
-					}
+				if (color) {
+					decl.cloneAfter({
+						prop: 'background-color',
+						value: color
+					}).raws.before = ONE_SPACE;
 				}
+			}
+
+			// Replace with comment token
+			if (_.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
+				commentDecl = decl.cloneAfter({
+					type: 'comment',
+					text: image.url
+				});
+
+				commentDecl.raws.left = `${ONE_SPACE}${COMMENT_TOKEN_PREFIX}`;
+				image.token = commentDecl.toString();
+
+				decl.remove();
 			}
 		});
 
