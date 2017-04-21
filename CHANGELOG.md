@@ -1,5 +1,9 @@
 # Change Log
 
+## [4.2.1] - 2017-02-07
+### Fixed
+- Preserve source of original declarations - See #90
+
 ## [4.2.0] - 2017-02-07
 ### Added
 - [`verbose`](https://github.com/2createStudio/postcss-sprites#verbose) option
