@@ -14,14 +14,8 @@ var sprites = require('postcss-sprites');
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',
-	filterBy: function(image) {
-		// Allow only png files
-		if (!/\.png$/.test(image.url)) {
-			return Promise.reject();
-		}
-
-		return Promise.resolve();
-	}
+	// build sprite with only `.png` images
+	filterBy: ({ path: imagePath }) => (/\.png$/).test(imagePath)
 }
 ```
 
