@@ -1,4 +1,5 @@
 import path from 'path';
+import sizeOf from 'image-size';
 import fs from 'fs-extra';
 import Promise from 'bluebird';
 import _ from 'lodash';
@@ -148,6 +149,7 @@ export function extractImages(root, opts, result) {
 
 		// The host object of found image
 		const image = {
+            size: {},
 			path: null,
 			url: null,
 			originalUrl: null,
@@ -178,6 +180,8 @@ export function extractImages(root, opts, result) {
 				} else {
 					image.path = path.resolve(path.dirname(styleFilePath), image.url);
 				}
+
+                image.size = sizeOf(image.path) || {};
 
 				images.push(image);
 			} else {
@@ -448,7 +452,7 @@ export function updateReferences(root, opts, images, spritesheets) {
  * @return
  */
 export function updateRule(rule, token, image) {
-	const { retina, ratio, coords, spriteUrl, spriteWidth, spriteHeight } = image;
+	const { retina, ratio, coords, spriteUrl, spriteWidth, spriteHeight, size } = image;
 	const posX = -1 * Math.abs(coords.x / ratio);
 	const posY = -1 * Math.abs(coords.y / ratio);
 	const sizeX = spriteWidth / ratio;
@@ -464,7 +468,13 @@ export function updateRule(rule, token, image) {
 	}).cloneAfter({
 		prop: 'background-size',
 		value: `${sizeX}px ${sizeY}px`
-	});
+	}).cloneBefore({
+        prop: 'width',
+        value: `${size.width}px`,
+    }).cloneBefore({
+        prop: 'height',
+        value: `${size.height}px`,
+    });
 }
 
 /////////////////////////
