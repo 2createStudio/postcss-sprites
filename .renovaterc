@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "separatePatchReleases": false,
+  "ignoreUnstable": true,
+  "automerge": true,
+  "automergeType": "branch-push",
+  "peerDependencies": {
+    "versionStrategy": "widen"
+  },
+  "packageRules": [
+    {
+      "extends": "monorepo:babel6",
+      "groupName": "babel6 monorepo"
+    }
+  ]
+}
