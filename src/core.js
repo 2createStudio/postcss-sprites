@@ -1,34 +1,82 @@
-import path from 'path';
-import fs from 'fs-extra';
-import Promise from 'bluebird';
-import _ from 'lodash';
-import debug from 'debug';
-import RasterFactory from './factories/raster';
-import VectorFactory from './factories/vector';
+'use strict';
+
+exports.__esModule = true;
+exports.defaults = undefined;
+exports.prepareFilterBy = prepareFilterBy;
+exports.prepareGroupBy = prepareGroupBy;
+exports.extractImages = extractImages;
+exports.applyFilterBy = applyFilterBy;
+exports.applyGroupBy = applyGroupBy;
+exports.setTokens = setTokens;
+exports.runSpritesmith = runSpritesmith;
+exports.saveSpritesheets = saveSpritesheets;
+exports.mapSpritesheetProps = mapSpritesheetProps;
+exports.updateReferences = updateReferences;
+exports.updateRule = updateRule;
+exports.hasImageInRule = hasImageInRule;
+exports.getImageUrl = getImageUrl;
+exports.isImageSupported = isImageSupported;
+exports.isRetinaImage = isRetinaImage;
+exports.getRetinaRatio = getRetinaRatio;
+exports.getColor = getColor;
+exports.maskGroup = maskGroup;
+exports.makeSpritesheetPath = makeSpritesheetPath;
+exports.isToken = isToken;
+exports.createLogger = createLogger;
+
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _fsExtra = require('fs-extra');
+
+var _fsExtra2 = _interopRequireDefault(_fsExtra);
+
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _debug = require('debug');
+
+var _debug2 = _interopRequireDefault(_debug);
+
+var _raster = require('./factories/raster');
+
+var _raster2 = _interopRequireDefault(_raster);
+
+var _vector = require('./factories/vector');
+
+var _vector2 = _interopRequireDefault(_vector);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Wrap with promises.
  */
-Promise.promisifyAll(fs);
+_bluebird2.default.promisifyAll(_fsExtra2.default);
 
 /**
  * Plugin constants.
  */
-const RELATIVE_TO_FILE = 'file';
-const RELATIVE_TO_RULE = 'rule';
-const BACKGROUND = 'background';
-const BACKGROUND_IMAGE = 'background-image';
-const ONE_SPACE = ' ';
-const COMMENT_TOKEN_PREFIX = '@replace|';
-const GROUP_DELIMITER = '.';
-const GROUP_MASK = '*';
-const TYPE_RASTER = 'raster';
-const TYPE_VECTOR = 'vector';
+var RELATIVE_TO_FILE = 'file';
+var RELATIVE_TO_RULE = 'rule';
+var BACKGROUND = 'background';
+var BACKGROUND_IMAGE = 'background-image';
+var ONE_SPACE = ' ';
+var COMMENT_TOKEN_PREFIX = '@replace|';
+var GROUP_DELIMITER = '.';
+var GROUP_MASK = '*';
+var TYPE_RASTER = 'raster';
+var TYPE_VECTOR = 'vector';
 
 /**
  * Plugin defaults.
  */
-export const defaults = {
+var defaults = exports.defaults = {
 	basePath: './',
 	stylesheetPath: null,
 	spritePath: './',
@@ -60,7 +108,7 @@ export const defaults = {
 
 		shape: {
 			id: {
-				generator(name, file) {
+				generator: function generator(name, file) {
 					return new Buffer(file.path).toString('base64');
 				}
 			}
@@ -79,21 +127,20 @@ export const defaults = {
  * @param  {Result} result
  * @return
  */
-export function prepareFilterBy(opts, result) {
-	if (_.isFunction(opts.filterBy)) {
+function prepareFilterBy(opts, result) {
+	if (_lodash2.default.isFunction(opts.filterBy)) {
 		opts.filterBy = [opts.filterBy];
 	}
 
 	// Filter non existing images
-	opts.filterBy.unshift(image => {
-		return fs.statAsync(image.path)
-			.catch(() => {
-				const message = `Skip ${image.url} because doesn't exist.`;
+	opts.filterBy.unshift(function (image) {
+		return _fsExtra2.default.statAsync(image.path).catch(function () {
+			var message = 'Skip ' + image.url + ' because doesn\'t exist.';
 
-				opts.logger(message);
+			opts.logger(message);
 
-				throw new Error(message);
-			});
+			throw new Error(message);
+		});
 	});
 }
 
@@ -102,29 +149,29 @@ export function prepareFilterBy(opts, result) {
  * @param  {Object} opts
  * @return
  */
-export function prepareGroupBy(opts) {
-	if (_.isFunction(opts.groupBy)) {
+function prepareGroupBy(opts) {
+	if (_lodash2.default.isFunction(opts.groupBy)) {
 		opts.groupBy = [opts.groupBy];
 	}
 
 	// Group by retina ratio
 	if (opts.retina) {
-		opts.groupBy.unshift((image) => {
+		opts.groupBy.unshift(function (image) {
 			if (image.retina) {
-				return Promise.resolve(`@${image.ratio}x`);
+				return _bluebird2.default.resolve('@' + image.ratio + 'x');
 			}
 
-			return Promise.reject(new Error('Not a retina image.'));
+			return _bluebird2.default.reject(new Error('Not a retina image.'));
 		});
 	}
 
 	// Group by type - 'vector' or 'raster'
-	opts.groupBy.unshift((image) => {
-		if (/^\.svg/.test(path.extname(image.path))) {
-			return Promise.resolve(TYPE_VECTOR);
+	opts.groupBy.unshift(function (image) {
+		if (/^\.svg/.test(_path2.default.extname(image.path))) {
+			return _bluebird2.default.resolve(TYPE_VECTOR);
 		}
 
-		return Promise.resolve(TYPE_RASTER);
+		return _bluebird2.default.resolve(TYPE_RASTER);
 	});
 }
 
@@ -136,18 +183,18 @@ export function prepareGroupBy(opts) {
  * @param  {Result} result
  * @return {Promise}
  */
-export function extractImages(root, opts, result) {
-	let images = [];
+function extractImages(root, opts, result) {
+	var images = [];
 
 	opts.logger('Extracting the images...');
 
 	// Search for background & background image declartions
-	root.walkRules((rule) => {
-		const styleFilePath = opts.relativeTo === RELATIVE_TO_RULE ? rule.source.input.file : root.source.input.file;
-		const ABSOLUTE_URL = /^\//;
+	root.walkRules(function (rule) {
+		var styleFilePath = opts.relativeTo === RELATIVE_TO_RULE ? rule.source.input.file : root.source.input.file;
+		var ABSOLUTE_URL = /^\//;
 
 		// The host object of found image
-		const image = {
+		var image = {
 			path: null,
 			url: null,
 			originalUrl: null,
@@ -160,8 +207,7 @@ export function extractImages(root, opts, result) {
 
 		// Manipulate only rules with image in them
 		if (hasImageInRule(rule.toString())) {
-			const imageUrl = getImageUrl(rule.toString());
-
+			var imageUrl = getImageUrl(rule.toString());
 			image.originalUrl = imageUrl[0];
 			image.url = imageUrl[1];
 
@@ -174,22 +220,22 @@ export function extractImages(root, opts, result) {
 
 				// Get the filesystem path to the image
 				if (ABSOLUTE_URL.test(image.url)) {
-					image.path = path.resolve(opts.basePath + image.url);
+					image.path = _path2.default.resolve(opts.basePath + image.url);
 				} else {
-					image.path = path.resolve(path.dirname(styleFilePath), image.url);
+					image.path = _path2.default.resolve(_path2.default.dirname(styleFilePath), image.url);
 				}
 
 				images.push(image);
 			} else {
-				opts.logger(`Skip ${image.url} because isn't supported.`)
+				opts.logger('Skip ' + image.url + ' because isn\'t supported.');
 			}
 		}
 	});
 
 	// Remove duplicates and empty values
-	images = _.uniqBy(images, 'path');
+	images = _lodash2.default.uniqBy(images, 'path');
 
-	return Promise.resolve([opts, images]);
+	return _bluebird2.default.resolve([opts, images]);
 }
 
 /**
@@ -198,16 +244,20 @@ export function extractImages(root, opts, result) {
  * @param  {Array}   images
  * @return {Promise}
  */
-export function applyFilterBy(opts, images) {
+function applyFilterBy(opts, images) {
 	opts.logger('Applying the filters...');
 
-	return Promise.reduce(opts.filterBy, (images, filterFn) => {
-		return Promise.filter(images, (image) => {
-			return filterFn(image)
-				.then(() => true)
-				.catch(() => false);
+	return _bluebird2.default.reduce(opts.filterBy, function (images, filterFn) {
+		return _bluebird2.default.filter(images, function (image) {
+			return filterFn(image).then(function () {
+				return true;
+			}).catch(function () {
+				return false;
+			});
 		}, { concurrency: 1 });
-	}, images).then(images => [opts, images]);
+	}, images).then(function (images) {
+		return [opts, images];
+	});
 }
 
 /**
@@ -216,19 +266,21 @@ export function applyFilterBy(opts, images) {
  * @param  {Array}  images
  * @return {Promise}
  */
-export function applyGroupBy(opts, images) {
+function applyGroupBy(opts, images) {
 	opts.logger('Applying the groups...');
 
-	return Promise.reduce(opts.groupBy, (images, groupFn) => {
-		return Promise.map(images, (image) => {
-			return groupFn(image)
-				.then(group => {
-					image.groups.push(group);
-					return image;
-				})
-				.catch(() => image);
+	return _bluebird2.default.reduce(opts.groupBy, function (images, groupFn) {
+		return _bluebird2.default.map(images, function (image) {
+			return groupFn(image).then(function (group) {
+				image.groups.push(group);
+				return image;
+			}).catch(function () {
+				return image;
+			});
 		});
-	}, images).then(images => [opts, images]);
+	}, images).then(function (images) {
+		return [opts, images];
+	});
 }
 
 /**
@@ -239,12 +291,17 @@ export function applyGroupBy(opts, images) {
  * @param  {Array}  images
  * @return {Promise}
  */
-export function setTokens(root, opts, images) {
-	return new Promise((resolve, reject) => {
-		root.walkDecls(/^background(-image)?$/, (decl) => {
-			const rule = decl.parent;
-			const ruleStr = rule.toString();
-			let url, image, color, backgroundColorDecl, commentDecl;
+function setTokens(root, opts, images) {
+	return new _bluebird2.default(function (resolve, reject) {
+		root.walkDecls(/^background(-image)?$/, function (decl) {
+			var rule = decl.parent;
+			var ruleStr = rule.toString();
+			var url = void 0,
+			    image = void 0,
+			    color = void 0,
+                repeat = void 0,//2019-12-10
+			    backgroundColorDecl = void 0,
+			    commentDecl = void 0;
 
 			if (!hasImageInRule(ruleStr)) {
 				return;
@@ -253,14 +310,17 @@ export function setTokens(root, opts, images) {
 			// Manipulate only rules with image in them
 
 			url = getImageUrl(ruleStr)[1];
-			image = _.find(images, { url });
+			image = _lodash2.default.find(images, { url: url });
 
 			if (!image) {
 				return;
 			}
 
-			// Remove all necessary background declarations
-			rule.walkDecls(/^background-(repeat|size|position)$/, decl => decl.remove());
+			// Remove all necessary background declarations  
+			rule.walkDecls(/^background-(repeat|size|position)$/, function (decl) {
+				return decl.remove();
+			});
+
 
 			// Extract color to background-color property
 			if (decl.prop === BACKGROUND) {
@@ -273,15 +333,29 @@ export function setTokens(root, opts, images) {
 					}).raws.before = ONE_SPACE;
 				}
 			}
+            
+            // Extract repeat to background-repeat property 2019-12-10
+            if (decl.prop === BACKGROUND) {
+            	repeat = getRepeat(decl.value);
+            
+            	if (repeat) {
+            		decl.cloneAfter({
+            			prop: 'background-repeat',
+            			value: repeat
+            		}).raws.before = ONE_SPACE;
+            	}
+            }
+            
+            
 
 			// Replace with comment token
-			if (_.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
+			if (_lodash2.default.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
 				commentDecl = decl.cloneAfter({
 					type: 'comment',
 					text: image.url
 				});
 
-				commentDecl.raws.left = `${ONE_SPACE}${COMMENT_TOKEN_PREFIX}`;
+				commentDecl.raws.left = '' + ONE_SPACE + COMMENT_TOKEN_PREFIX;
 				image.token = commentDecl.toString();
 
 				decl.remove();
@@ -298,39 +372,33 @@ export function setTokens(root, opts, images) {
  * @param  {Array}  images
  * @return {Promise}
  */
-export function runSpritesmith(opts, images) {
+function runSpritesmith(opts, images) {
 	opts.logger('Generating the spritesheets...');
 
-	return new Promise((resolve, reject) => {
-		const promises = _.chain(images)
-			.groupBy((image) => {
-				let tmp = image.groups.map(maskGroup(true));
-				tmp.unshift('_');
+	return new _bluebird2.default(function (resolve, reject) {
+		var promises = _lodash2.default.chain(images).groupBy(function (image) {
+			var tmp = image.groups.map(maskGroup(true));
+			tmp.unshift('_');
 
-				return tmp.join(GROUP_DELIMITER);
-			})
-			.map((images, tmp) => {
-				const factory = tmp.indexOf(TYPE_VECTOR) > -1 ? VectorFactory : RasterFactory;
+			return tmp.join(GROUP_DELIMITER);
+		}).map(function (images, tmp) {
+			var factory = tmp.indexOf(TYPE_VECTOR) > -1 ? _vector2.default : _raster2.default;
 
-				return factory(opts, images)
-					.then((spritesheet) => {
-						// Remove the '_', 'raster' or 'vector' prefixes
-						tmp = tmp.split(GROUP_DELIMITER).splice(2);
+			return factory(opts, images).then(function (spritesheet) {
+				// Remove the '_', 'raster' or 'vector' prefixes
+				tmp = tmp.split(GROUP_DELIMITER).splice(2);
 
-						spritesheet.groups = tmp.map(maskGroup());
+				spritesheet.groups = tmp.map(maskGroup());
 
-						return spritesheet;
-					});
-			})
-			.value();
-
-		Promise.all(promises)
-			.then((spritesheets) => {
-				resolve([opts, images, spritesheets])
-			})
-			.catch((err) => {
-				reject(err);
+				return spritesheet;
 			});
+		}).value();
+
+		_bluebird2.default.all(promises).then(function (spritesheets) {
+			resolve([opts, images, spritesheets]);
+		}).catch(function (err) {
+			reject(err);
+		});
 	});
 }
 
@@ -341,31 +409,26 @@ export function runSpritesmith(opts, images) {
  * @param  {Array}  spritesheets
  * @return {Promise}
  */
-export function saveSpritesheets(opts, images, spritesheets) {
+function saveSpritesheets(opts, images, spritesheets) {
 	opts.logger('Saving the spritesheets...');
 
-	return Promise.each(spritesheets, (spritesheet) => {
-		return (
-				_.isFunction(opts.hooks.onSaveSpritesheet) ?
-				Promise.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet)) :
-				Promise.resolve(makeSpritesheetPath(opts, spritesheet))
-			)
-			.then(( res ) => {
-				if (!res) {
-					throw new Error('postcss-sprites: Spritesheet requires a relative path.');
-				}
+	return _bluebird2.default.each(spritesheets, function (spritesheet) {
+		return (_lodash2.default.isFunction(opts.hooks.onSaveSpritesheet) ? _bluebird2.default.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet)) : _bluebird2.default.resolve(makeSpritesheetPath(opts, spritesheet))).then(function (res) {
+			if (!res) {
+				throw new Error('postcss-sprites: Spritesheet requires a relative path.');
+			}
 
-				if ( _.isString(res) ) {
-					spritesheet.path = res;
-				} else {
-					_.assign(spritesheet, res);
-				}
+			if (_lodash2.default.isString(res)) {
+				spritesheet.path = res;
+			} else {
+				_lodash2.default.assign(spritesheet, res);
+			}
 
-				spritesheet.path = spritesheet.path.replace(/\\/g, '/');
+			spritesheet.path = spritesheet.path.replace(/\\/g, '/');
 
-				return fs.outputFileAsync(spritesheet.path, spritesheet.image);
-			});
-	}).then(spritesheets => {
+			return _fsExtra2.default.outputFileAsync(spritesheet.path, spritesheet.image);
+		});
+	}).then(function (spritesheets) {
 		return [opts, images, spritesheets];
 	});
 }
@@ -377,26 +440,27 @@ export function saveSpritesheets(opts, images, spritesheets) {
  * @param  {Array}  spritesheets
  * @return {Promise}
  */
-export function mapSpritesheetProps(opts, images, spritesheets) {
-	_.forEach(spritesheets, ({ coordinates, path, properties }) => {
-		const spritePath = path;
-		const spriteWidth = properties.width;
-		const spriteHeight = properties.height;
+function mapSpritesheetProps(opts, images, spritesheets) {
+	_lodash2.default.forEach(spritesheets, function (_ref) {
+		var coordinates = _ref.coordinates,
+		    path = _ref.path,
+		    properties = _ref.properties;
 
-		_.forEach(coordinates, (coords, imagePath) => {
-			_.chain(images)
-				.find(['path', imagePath])
-				.merge({
-					coords,
-					spritePath,
-					spriteWidth,
-					spriteHeight
-				})
-				.value();
+		var spritePath = path;
+		var spriteWidth = properties.width;
+		var spriteHeight = properties.height;
+
+		_lodash2.default.forEach(coordinates, function (coords, imagePath) {
+			_lodash2.default.chain(images).find(['path', imagePath]).merge({
+				coords: coords,
+				spritePath: spritePath,
+				spriteWidth: spriteWidth,
+				spriteHeight: spriteHeight
+			}).value();
 		});
 	});
 
-	return Promise.resolve([opts, images, spritesheets]);
+	return _bluebird2.default.resolve([opts, images, spritesheets]);
 }
 
 /**
@@ -407,25 +471,26 @@ export function mapSpritesheetProps(opts, images, spritesheets) {
  * @param  {Array}  spritesheets
  * @return {Promise}
  */
-export function updateReferences(root, opts, images, spritesheets) {
+function updateReferences(root, opts, images, spritesheets) {
 	opts.logger('Replacing the references...');
 
-	root.walkComments((comment) => {
-		let rule, image;
+	root.walkComments(function (comment) {
+		var rule = void 0,
+		    image = void 0;
 
 		// Manipulate only comment tokens
 		if (isToken(comment.toString())) {
 			rule = comment.parent;
-			image = _.find(images, { url: comment.text });
+			image = _lodash2.default.find(images, { url: comment.text });
 
 			// Update the rule with background declarations
 			if (image) {
 				// Generate CSS url to sprite
-				image.spriteUrl = path.relative(opts.stylesheetPath || path.dirname(root.source.input.file), image.spritePath);
-				image.spriteUrl = image.spriteUrl.split(path.sep).join('/');
+				image.spriteUrl = _path2.default.relative(opts.stylesheetPath || _path2.default.dirname(root.source.input.file), image.spritePath);
+				image.spriteUrl = image.spriteUrl.split(_path2.default.sep).join('/');
 
 				// Update rule
-				if (_.isFunction(opts.hooks.onUpdateRule)) {
+				if (_lodash2.default.isFunction(opts.hooks.onUpdateRule)) {
 					opts.hooks.onUpdateRule(rule, comment, image);
 				} else {
 					updateRule(rule, comment, image);
@@ -437,7 +502,7 @@ export function updateReferences(root, opts, images, spritesheets) {
 		}
 	});
 
-	return Promise.resolve([root, opts, images, spritesheets]);
+	return _bluebird2.default.resolve([root, opts, images, spritesheets]);
 }
 
 /**
@@ -447,23 +512,29 @@ export function updateReferences(root, opts, images, spritesheets) {
  * @param  {Object} image
  * @return
  */
-export function updateRule(rule, token, image) {
-	const { retina, ratio, coords, spriteUrl, spriteWidth, spriteHeight } = image;
-	const posX = -1 * Math.abs(coords.x / ratio);
-	const posY = -1 * Math.abs(coords.y / ratio);
-	const sizeX = spriteWidth / ratio;
-	const sizeY = spriteHeight / ratio;
+function updateRule(rule, token, image) {
+	var retina = image.retina,
+	    ratio = image.ratio,
+	    coords = image.coords,
+	    spriteUrl = image.spriteUrl,
+	    spriteWidth = image.spriteWidth,
+	    spriteHeight = image.spriteHeight;
+        
+	var posX = -1 * Math.abs(coords.x / ratio);
+	var posY = -1 * Math.abs(coords.y / ratio);
+	var sizeX = spriteWidth / ratio;
+	var sizeY = spriteHeight / ratio;
 
 	token.cloneAfter({
 		type: 'decl',
 		prop: 'background-image',
-		value: `url(${spriteUrl})`
+		value: 'url(' + spriteUrl + ')'
 	}).cloneAfter({
 		prop: 'background-position',
-		value: `${posX}px ${posY}px`
+		value: posX + 'px ' + posY + 'px'
 	}).cloneAfter({
 		prop: 'background-size',
-		value: `${sizeX}px ${sizeY}px`
+		value: sizeX + 'px ' + sizeY + 'px'
 	});
 }
 
@@ -476,8 +547,9 @@ export function updateRule(rule, token, image) {
  * @param  {String}  rule
  * @return {Boolean}
  */
-export function hasImageInRule(rule) {
-	return /background[^:]*.*url[^;]+/gi.test(rule);
+function hasImageInRule(rule) {
+	return (/background[^:]*.*url[^;]+/gi.test(rule)
+	);
 }
 
 /**
@@ -485,16 +557,15 @@ export function hasImageInRule(rule) {
  * @param  {String} rule
  * @return {Array}
  */
-export function getImageUrl(rule) {
-	const matches = /url(?:\(['"]?)(.*?)(?:['"]?\))/gi.exec(rule);
-	let original = '';
-	let normalized = '';
+function getImageUrl(rule) {
+	var matches = /url(?:\(['"]?)(.*?)(?:['"]?\))/gi.exec(rule);
+	var original = '';
+	var normalized = '';
 
 	if (matches) {
 		original = matches[1];
-		normalized = original
-			.replace(/['"]/gi, '') // replace all quotes
-			.replace(/\?.*$/gi, ''); // replace query params
+		normalized = original.replace(/['"]/gi, '') // replace all quotes
+		.replace(/\?.*$/gi, ''); // replace query params
 	}
 
 	return [original, normalized];
@@ -505,9 +576,9 @@ export function getImageUrl(rule) {
  * @param  {String}  url
  * @return {Boolean}
  */
-export function isImageSupported(url) {
-	const http = /^http[s]?/gi;
-	const base64 = /^data\:image/gi;
+function isImageSupported(url) {
+	var http = /^http[s]?/gi;
+	var base64 = /^data\:image/gi;
 
 	return !http.test(url) && !base64.test(url);
 }
@@ -517,8 +588,9 @@ export function isImageSupported(url) {
  * @param  {String}  url
  * @return {Boolean}
  */
-export function isRetinaImage(url) {
-	return /@(\d)x\.[a-z]{3,4}$/gi.test(url);
+function isRetinaImage(url) {
+	return (/@(\d)x\.[a-z]{3,4}$/gi.test(url)
+	);
 }
 
 /**
@@ -526,8 +598,8 @@ export function isRetinaImage(url) {
  * @param  {String} url
  * @return {Number}
  */
-export function getRetinaRatio(url) {
-	const matches = /@(\d)x\.[a-z]{3,4}$/gi.exec(url);
+function getRetinaRatio(url) {
+	var matches = /@(\d)x\.[a-z]{3,4}$/gi.exec(url);
 
 	if (!matches) {
 		return 1;
@@ -541,11 +613,11 @@ export function getRetinaRatio(url) {
  * @param  {String}  declValue
  * @return {String?}
  */
-export function getColor(declValue) {
-	const regexes = ['(#([0-9a-f]{3}){1,2})', 'rgba?\\([^\\)]+\\)'];
-	let match = null;
+function getColor(declValue) {
+	var regexes = ['(#([0-9a-f]{3}){1,2})', 'rgba?\\([^\\)]+\\)'];
+	var match = null;
 
-	_.forEach(regexes, (regex) => {
+	_lodash2.default.forEach(regexes, function (regex) {
 		regex = new RegExp(regex, 'gi');
 
 		if (regex.test(declValue)) {
@@ -556,16 +628,42 @@ export function getColor(declValue) {
 	return match;
 }
 
+
+/**2019-12-10
+ * Extracts the repeat from background declaration.
+ * @param  {String}  declValue
+ * @return {String?}
+ */
+function getRepeat(declValue) {
+	var regexes = ['no\\-repeat', 'repeat\\-x', 'repeat\\-y'];
+	var match = null;
+
+	_lodash2.default.forEach(regexes, function (regex) {
+		regex = new RegExp(regex, 'gi');
+
+		if (regex.test(declValue)) {
+			match = declValue.match(regex)[0];
+		}
+	});
+
+	return match;
+}
+
+
 /**
  * Simple helper to avoid collisions with group names.
  * @param  {Boolean} toggle
  * @return {Function}
  */
-export function maskGroup(toggle = false) {
-	const input = new RegExp(`[${toggle ? GROUP_DELIMITER : GROUP_MASK }]`, 'gi');
-	const output = toggle ? GROUP_MASK : GROUP_DELIMITER;
+function maskGroup() {
+	var toggle = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-	return value => value.replace(input, output);
+	var input = new RegExp('[' + (toggle ? GROUP_DELIMITER : GROUP_MASK) + ']', 'gi');
+	var output = toggle ? GROUP_MASK : GROUP_DELIMITER;
+
+	return function (value) {
+		return value.replace(input, output);
+	};
 }
 
 /**
@@ -574,8 +672,11 @@ export function maskGroup(toggle = false) {
  * @param  {Object}  spritesheet
  * @return {String}
  */
-export function makeSpritesheetPath(opts, { groups, extension }) {
-	return path.join(opts.spritePath, ['sprite', ...groups, extension].join('.'));
+function makeSpritesheetPath(opts, _ref2) {
+	var groups = _ref2.groups,
+	    extension = _ref2.extension;
+
+	return _path2.default.join(opts.spritePath, ['sprite'].concat(groups, [extension]).join('.'));
 }
 
 /**
@@ -584,7 +685,7 @@ export function makeSpritesheetPath(opts, { groups, extension }) {
  * @param  {String}  commentValue
  * @return {Boolean}
  */
-export function isToken(commentValue) {
+function isToken(commentValue) {
 	return commentValue.indexOf(COMMENT_TOKEN_PREFIX) > -1;
 }
 
@@ -594,10 +695,10 @@ export function isToken(commentValue) {
  * @param  {Boolean} enabled
  * @return {Function}
  */
-export function createLogger(enabled) {
+function createLogger(enabled) {
 	if (enabled) {
-		debug.enable('postcss-sprites');
+		_debug2.default.enable('postcss-sprites');
 	}
 
-	return debug('postcss-sprites');
+	return (0, _debug2.default)('postcss-sprites');
 }
