@@ -244,7 +244,7 @@ export function setTokens(root, opts, images) {
 		root.walkDecls(/^background(-image)?$/, (decl) => {
 			const rule = decl.parent;
 			const ruleStr = rule.toString();
-			let url, image, color, backgroundColorDecl, commentDecl;
+			let url, image, color,repeat, backgroundColorDecl, commentDecl;
 
 			if (!hasImageInRule(ruleStr)) {
 				return;
@@ -274,6 +274,18 @@ export function setTokens(root, opts, images) {
 				}
 			}
 
+			// Extract repeat to background-repeat property
+			if (decl.prop === BACKGROUND) {
+				repeat = getRepeat(decl.value);
+
+				if (repeat) {
+					decl.cloneAfter({
+						prop: 'background-repeat',
+						value: repeat
+					}).raws.before = ONE_SPACE;
+				}
+			}
+			
 			// Replace with comment token
 			if (_.includes([BACKGROUND, BACKGROUND_IMAGE], decl.prop)) {
 				commentDecl = decl.cloneAfter({
@@ -543,6 +555,26 @@ export function getRetinaRatio(url) {
  */
 export function getColor(declValue) {
 	const regexes = ['(#([0-9a-f]{3}){1,2})', 'rgba?\\([^\\)]+\\)'];
+	let match = null;
+
+	_.forEach(regexes, (regex) => {
+		regex = new RegExp(regex, 'gi');
+
+		if (regex.test(declValue)) {
+			match = declValue.match(regex)[0];
+		}
+	});
+
+	return match;
+}
+
+/**
+ * Extracts the repeat from background declaration.
+ * @param  {String}  declValue
+ * @return {String?}
+ */
+export function getRepeat(declValue) {
+	const regexes = ['no\\-repeat','repeat\\-y','repeat\\-x'];
 	let match = null;
 
 	_.forEach(regexes, (regex) => {
