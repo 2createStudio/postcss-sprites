@@ -7,11 +7,6 @@ import RasterFactory from './factories/raster';
 import VectorFactory from './factories/vector';
 
 /**
- * Wrap with promises.
- */
-Promise.promisifyAll(fs);
-
-/**
  * Plugin constants.
  */
 const RELATIVE_TO_FILE = 'file';
@@ -86,7 +81,7 @@ export function prepareFilterBy(opts, result) {
 
 	// Filter non existing images
 	opts.filterBy.unshift(image => {
-		return fs.statAsync(image.path)
+		return fs.stat(image.path)
 			.catch(() => {
 				const message = `Skip ${image.url} because doesn't exist.`;
 
@@ -363,7 +358,7 @@ export function saveSpritesheets(opts, images, spritesheets) {
 
 				spritesheet.path = spritesheet.path.replace(/\\/g, '/');
 
-				return fs.outputFileAsync(spritesheet.path, spritesheet.image);
+				return fs.outputFile(spritesheet.path, spritesheet.image);
 			});
 	}).then(spritesheets => {
 		return [opts, images, spritesheets];

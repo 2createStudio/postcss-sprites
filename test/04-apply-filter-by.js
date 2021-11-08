@@ -1,6 +1,5 @@
 import test from 'ava';
 import postcss from 'postcss';
-import Promise from 'bluebird';
 import _ from 'lodash';
 import { defaults, prepareFilterBy, extractImages, applyFilterBy } from '../lib/core';
 

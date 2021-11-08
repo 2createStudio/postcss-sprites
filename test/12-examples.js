@@ -1,16 +1,13 @@
 import test from 'ava';
 import postcss from 'postcss';
 import fs from 'fs-extra';
-import Promise from 'bluebird';
 import path from 'path';
 import plugin from '../lib';
 import { updateRule } from '../lib/core';
 
-const readFileAsync = Promise.promisify(fs.readFile);
-
 async function run(inputPath, expectedPath, opts, t) {
-	const input = await readFileAsync(inputPath, 'utf8');
-	const expected = await readFileAsync(expectedPath, 'utf8');
+	const input = await fs.readFile(inputPath, 'utf8');
+	const expected = await fs.readFile(expectedPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 	const result = await processor.process(input, { from: inputPath });
 

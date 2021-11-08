@@ -1,15 +1,12 @@
 import test from 'ava';
 import postcss from 'postcss';
 import fs from 'fs-extra';
-import Promise from 'bluebird';
 import path from 'path';
 import plugin from '../lib';
 
-const readFileAsync = Promise.promisify(fs.readFile);
-
 async function run(inputPath, expectedPath, opts, t) {
-	const input = await readFileAsync(inputPath, 'utf8');
-	const expected = await readFileAsync(expectedPath, 'utf8');
+	const input = await fs.readFile(inputPath, 'utf8');
+	const expected = await fs.readFile(expectedPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 	const result = await processor.process(input, { from: inputPath });
 
@@ -23,7 +20,7 @@ test('throws error', async (t) => {
 		spritePath: './test/build/example-error/',
 	};
 
-	const input = await readFileAsync(inputPath, 'utf8');
+	const input = await fs.readFile(inputPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 
 	return t.throwsAsync(() => processor.process(input, { from: inputPath }));
