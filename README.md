@@ -21,7 +21,7 @@
 ```javascript
 var fs = require('fs');
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var { default: sprites } = require('postcss-sprites');
 
 var css = fs.readFileSync('./css/style.css', 'utf8');
 var opts = {
