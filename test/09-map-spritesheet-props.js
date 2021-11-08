@@ -50,5 +50,5 @@ test('should add coords & spritePath to every SVG image', async (t) => {
 	[ opts, images, spritesheets ] = await mapSpritesheetProps(t.context.opts, images, spritesheets);
 
 	t.deepEqual(images[0].spritePath, 'test/build/svg-basic/sprite.svg');
-	t.deepEqual(images[0].coords, { x: 0, y: 0, height: 600, width: 600 });
+	t.deepEqual(images[0].coords, { x: -0, y: -0, height: 600, width: 600 });
 });
