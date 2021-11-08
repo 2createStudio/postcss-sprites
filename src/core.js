@@ -61,7 +61,7 @@ export const defaults = {
 		shape: {
 			id: {
 				generator(name, file) {
-					return new Buffer(file.path).toString('base64');
+					return Buffer.from(file.path).toString('base64');
 				}
 			}
 		},

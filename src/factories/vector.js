@@ -33,7 +33,7 @@ export default function run(opts, images) {
 
 
 		data.css.shapes.forEach((shape) => {
-			spritesheet.coordinates[new Buffer(shape.name, 'base64').toString()] = {
+			spritesheet.coordinates[Buffer.from(shape.name, 'base64').toString()] = {
 				width: shape.width.outer,
 				height: shape.height.outer,
 				x: shape.position.absolute.x,
