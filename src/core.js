@@ -1,8 +1,11 @@
 import path from 'path';
 import fs from 'fs-extra';
-import Promise from 'bluebird';
 import _ from 'lodash';
 import debug from 'debug';
+import pFilter from 'p-filter';
+import pReduce from 'p-reduce';
+import pMap from 'p-map';
+import pEach from 'p-each-series';
 import RasterFactory from './factories/raster';
 import VectorFactory from './factories/vector';
 
@@ -196,8 +199,8 @@ export function extractImages(root, opts, result) {
 export function applyFilterBy(opts, images) {
 	opts.logger('Applying the filters...');
 
-	return Promise.reduce(opts.filterBy, (images, filterFn) => {
-		return Promise.filter(images, (image) => {
+	return pReduce(opts.filterBy, (images, filterFn) => {
+		return pFilter(images, (image) => {
 			return filterFn(image)
 				.then(() => true)
 				.catch(() => false);
@@ -214,8 +217,8 @@ export function applyFilterBy(opts, images) {
 export function applyGroupBy(opts, images) {
 	opts.logger('Applying the groups...');
 
-	return Promise.reduce(opts.groupBy, (images, groupFn) => {
-		return Promise.map(images, (image) => {
+	return pReduce(opts.groupBy, (images, groupFn) => {
+		return pMap(images, (image) => {
 			return groupFn(image)
 				.then(group => {
 					image.groups.push(group);
@@ -339,7 +342,7 @@ export function runSpritesmith(opts, images) {
 export function saveSpritesheets(opts, images, spritesheets) {
 	opts.logger('Saving the spritesheets...');
 
-	return Promise.each(spritesheets, (spritesheet) => {
+	return pEach(spritesheets, (spritesheet) => {
 		return (
 				_.isFunction(opts.hooks.onSaveSpritesheet) ?
 				Promise.resolve(opts.hooks.onSaveSpritesheet(opts, spritesheet)) :

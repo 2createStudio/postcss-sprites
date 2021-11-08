@@ -1,6 +1,6 @@
 import fs from 'fs';
 import SVGSpriter from 'svg-sprite';
-import Promise from 'bluebird';
+import { promisify } from 'util';
 import _ from 'lodash';
 
 /**
@@ -17,10 +17,15 @@ export default function run(opts, images) {
 		spriter.add(path, null, fs.readFileSync(path, { encoding: 'utf-8' }));
 	});
 
-	return Promise.promisify(spriter.compile, {
-		context: spriter,
-		multiArgs: true
-	})().spread((result, data) => {
+	return new Promise((resolve, reject) => {
+		spriter.compile((error, ...result) => {
+			if (error) {
+				reject(error);
+				return
+			}
+			resolve(result);
+		})
+	}).then(([result, data]) => {
 		const spritesheet = {};
 
 		spritesheet.extension = 'svg';
