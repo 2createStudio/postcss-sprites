@@ -1,8 +1,5 @@
 {
 	"presets": [
-		["@babel/preset-env", { "loose": true }]
-	],
-	"plugins": [
-		["@babel/plugin-transform-runtime", { "helpers": false }]
+		["@babel/preset-env", { "loose": true, "targets": { "node": "12" } }]
 	]
 }
