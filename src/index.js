@@ -51,5 +51,6 @@ const plugin = (options = {}) => {
 		}
 	}
 };
-export default plugin;
 plugin.postcss = true;
+
+export default plugin;
