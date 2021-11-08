@@ -2,3 +2,4 @@
 node_modules/
 test/build/
 lib/
+package-lock.json

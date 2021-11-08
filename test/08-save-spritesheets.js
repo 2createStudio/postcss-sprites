@@ -20,26 +20,26 @@ test.beforeEach((t) => {
 });
 
 test('should save spritesheets', async (t) => {
-	const cssContents = await readFileAsync('./fixtures/basic/style.css');
-	const ast = postcss.parse(cssContents, { from: './fixtures/basic/style.css' });
+	const cssContents = await readFileAsync('./test/fixtures/basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './test/fixtures/basic/style.css' });
 	let images, spritesheets, opts;
 
-	t.context.opts.spritePath = './build/basic';
+	t.context.opts.spritePath = './test/build/basic';
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 
-	t.deepEqual(spritesheets[0].path, 'build/basic/sprite.png');
-	t.truthy(fs.statAsync('./build/basic/sprite.png'));
+	t.deepEqual(spritesheets[0].path, 'test/build/basic/sprite.png');
+	t.truthy(fs.statAsync('./test/build/basic/sprite.png'));
 });
 
 test('should save SVG spritesheets', async (t) => {
-	const cssContents = await readFileAsync('./fixtures/svg-basic/style.css');
-	const ast = postcss.parse(cssContents, { from: './fixtures/svg-basic/style.css' });
+	const cssContents = await readFileAsync('./test/fixtures/svg-basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './test/fixtures/svg-basic/style.css' });
 	let images, spritesheets, opts;
 
-	t.context.opts.spritePath = './build/svg-basic';
+	t.context.opts.spritePath = './test/build/svg-basic';
 
 	prepareGroupBy(t.context.opts);
 	[ opts, images ] = await extractImages(ast, t.context.opts);
@@ -47,16 +47,16 @@ test('should save SVG spritesheets', async (t) => {
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 
-	t.deepEqual(spritesheets[0].path, 'build/svg-basic/sprite.svg');
-	t.truthy(fs.statAsync('./build/svg-basic/sprite.svg'));
+	t.deepEqual(spritesheets[0].path, 'test/build/svg-basic/sprite.svg');
+	t.truthy(fs.statAsync('./test/build/svg-basic/sprite.svg'));
 });
 
 test('should save spritesheets by groups', async (t) => {
-	const cssContents = await readFileAsync('./fixtures/retina/style.css');
-	const ast = postcss.parse(cssContents, { from: './fixtures/retina/style.css' });
+	const cssContents = await readFileAsync('./test/fixtures/retina/style.css');
+	const ast = postcss.parse(cssContents, { from: './test/fixtures/retina/style.css' });
 	let images, spritesheets, opts;
 
-	t.context.opts.spritePath = './build/retina';
+	t.context.opts.spritePath = './test/build/retina';
 	t.context.opts.retina = true;
 
 	prepareGroupBy(t.context.opts);
@@ -66,18 +66,18 @@ test('should save spritesheets by groups', async (t) => {
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 
-	t.deepEqual(spritesheets[0].path, 'build/retina/sprite.png');
-	t.deepEqual(spritesheets[1].path, 'build/retina/sprite.@2x.png');
-	t.truthy(fs.statAsync('./build/retina/sprite.png'));
-	t.truthy(fs.statAsync('./build/retina/sprite.@2x.png'));
+	t.deepEqual(spritesheets[0].path, 'test/build/retina/sprite.png');
+	t.deepEqual(spritesheets[1].path, 'test/build/retina/sprite.@2x.png');
+	t.truthy(fs.statAsync('./test/build/retina/sprite.png'));
+	t.truthy(fs.statAsync('./test/build/retina/sprite.@2x.png'));
 });
 
 test('should use path provided by book', async (t) => {
-	const cssContents = await readFileAsync('./fixtures/basic/style.css');
-	const ast = postcss.parse(cssContents, { from: './fixtures/basic/style.css' });
+	const cssContents = await readFileAsync('./test/fixtures/basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './test/fixtures/basic/style.css' });
 	let images, spritesheets, opts;
 
-	t.context.opts.spritePath = './build/on-save-hook/';
+	t.context.opts.spritePath = './test/build/on-save-hook/';
 	t.context.opts.hooks.onSaveSpritesheet = (pluginOpts, spritesheetGroups) => {
 		return path.join(pluginOpts.spritePath, 'custom-name.png');
 	}
@@ -86,16 +86,16 @@ test('should use path provided by book', async (t) => {
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 
-	t.deepEqual(spritesheets[0].path, 'build/on-save-hook/custom-name.png');
-	t.truthy(fs.statAsync('./build/on-save-hook/custom-name.png'));
+	t.deepEqual(spritesheets[0].path, 'test/build/on-save-hook/custom-name.png');
+	t.truthy(fs.statAsync('./test/build/on-save-hook/custom-name.png'));
 });
 
 test('should throw error if path is empty', async (t) => {
-	const cssContents = await readFileAsync('./fixtures/basic/style.css');
-	const ast = postcss.parse(cssContents, { from: './fixtures/basic/style.css' });
+	const cssContents = await readFileAsync('./test/fixtures/basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './test/fixtures/basic/style.css' });
 	let images, spritesheets, opts;
 
-	t.context.opts.spritePath = './build/on-save-hook/';
+	t.context.opts.spritePath = './test/build/on-save-hook/';
 	t.context.opts.hooks.onSaveSpritesheet = (pluginOpts, spritesheetGroups) => {
 		return '';
 	}
@@ -103,15 +103,15 @@ test('should throw error if path is empty', async (t) => {
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 
-	t.throws(saveSpritesheets(t.context.opts, images, spritesheets));
+	return t.throwsAsync(() => saveSpritesheets(t.context.opts, images, spritesheets));
 });
 
 test('should use Promise result provided by book', async (t) => {
-	const cssContents = await readFileAsync('./fixtures/basic/style.css');
-	const ast = postcss.parse(cssContents, { from: './fixtures/basic/style.css' });
+	const cssContents = await readFileAsync('./test/fixtures/basic/style.css');
+	const ast = postcss.parse(cssContents, { from: './test/fixtures/basic/style.css' });
 	let images, spritesheets, opts;
 
-	t.context.opts.spritePath = './build/on-save-hook/';
+	t.context.opts.spritePath = './test/build/on-save-hook/';
 	t.context.opts.hooks.onSaveSpritesheet = (pluginOpts, spritesheetGroups) => {
 		return new Promise(( resolve ) => setTimeout(() => resolve(Promise.resolve(path.join(pluginOpts.spritePath, 'custom-name.png'))), 0));
 	}
@@ -120,6 +120,6 @@ test('should use Promise result provided by book', async (t) => {
 	[ opts, images, spritesheets ] = await runSpritesmith(t.context.opts, images);
 	[ opts, images, spritesheets ] = await saveSpritesheets(t.context.opts, images, spritesheets);
 
-	t.deepEqual(spritesheets[0].path, 'build/on-save-hook/custom-name.png');
-	t.truthy(fs.statAsync('./build/on-save-hook/custom-name.png'));
+	t.deepEqual(spritesheets[0].path, 'test/build/on-save-hook/custom-name.png');
+	t.truthy(fs.statAsync('./test/build/on-save-hook/custom-name.png'));
 });

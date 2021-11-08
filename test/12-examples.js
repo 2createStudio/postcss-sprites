@@ -6,11 +6,11 @@ import path from 'path';
 import plugin from '../lib';
 import { updateRule } from '../lib/core';
 
-Promise.promisifyAll(fs);
+const readFileAsync = Promise.promisify(fs.readFile);
 
 async function run(inputPath, expectedPath, opts, t) {
-	const input = await fs.readFileAsync(inputPath, 'utf8');
-	const expected = await fs.readFileAsync(expectedPath, 'utf8');
+	const input = await readFileAsync(inputPath, 'utf8');
+	const expected = await readFileAsync(expectedPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 	const result = await processor.process(input, { from: inputPath });
 
@@ -18,11 +18,11 @@ async function run(inputPath, expectedPath, opts, t) {
 }
 
 test('filter by', async (t) => {
-	const inputPath = './fixtures/example-filter-by/style.css';
-	const expectedPath = './expectations/example-filter-by/style.css';
+	const inputPath = './test/fixtures/example-filter-by/style.css';
+	const expectedPath = './test/expectations/example-filter-by/style.css';
 	const opts = {
-		stylesheetPath: './build/example-filter-by/',
-		spritePath: './build/example-filter-by/',
+		stylesheetPath: './test/build/example-filter-by/',
+		spritePath: './test/build/example-filter-by/',
 		filterBy: (image) => {
 			if (!/\.png$/.test(image.url)) {
 				return Promise.reject();
@@ -36,11 +36,11 @@ test('filter by', async (t) => {
 });
 
 test('group by', async (t) => {
-	const inputPath = './fixtures/example-group-by/style.css';
-	const expectedPath = './expectations/example-group-by/style.css';
+	const inputPath = './test/fixtures/example-group-by/style.css';
+	const expectedPath = './test/expectations/example-group-by/style.css';
 	const opts = {
-		stylesheetPath: './build/example-group-by/',
-		spritePath: './build/example-group-by/',
+		stylesheetPath: './test/build/example-group-by/',
+		spritePath: './test/build/example-group-by/',
 		groupBy: (image) => {
 			if (image.url.indexOf('shapes') === -1) {
 				return Promise.reject();
@@ -54,11 +54,11 @@ test('group by', async (t) => {
 });
 
 test('output dimensions', async (t) => {
-	const inputPath = './fixtures/example-output-dimensions/style.css';
-	const expectedPath = './expectations/example-output-dimensions/style.css';
+	const inputPath = './test/fixtures/example-output-dimensions/style.css';
+	const expectedPath = './test/expectations/example-output-dimensions/style.css';
 	const opts = {
-		stylesheetPath: './build/example-output-dimensions/',
-		spritePath: './build/example-output-dimensions/',
+		stylesheetPath: './test/build/example-output-dimensions/',
+		spritePath: './test/build/example-output-dimensions/',
 		hooks: {
 			onUpdateRule: (rule, token, image) => {
 				updateRule(rule, token, image);
@@ -77,11 +77,11 @@ test('output dimensions', async (t) => {
 });
 
 test('responsive spritesheets', async (t) => {
-	const inputPath = './fixtures/example-responsive-spritesheets/style.css';
-	const expectedPath = './expectations/example-responsive-spritesheets/style.css';
+	const inputPath = './test/fixtures/example-responsive-spritesheets/style.css';
+	const expectedPath = './test/expectations/example-responsive-spritesheets/style.css';
 	const opts = {
-		stylesheetPath: './build/example-responsive-spritesheets/',
-		spritePath: './build/example-responsive-spritesheets/',
+		stylesheetPath: './test/build/example-responsive-spritesheets/',
+		spritePath: './test/build/example-responsive-spritesheets/',
 		hooks: {
 			onUpdateRule: (rule, token, image) => {
 				let backgroundSizeX = (image.spriteWidth / image.coords.width) * 100;
@@ -120,11 +120,11 @@ test('responsive spritesheets', async (t) => {
 });
 
 test('skip prefix', async (t) => {
-	const inputPath = './fixtures/example-skip-prefix/style.css';
-	const expectedPath = './expectations/example-skip-prefix/style.css';
+	const inputPath = './test/fixtures/example-skip-prefix/style.css';
+	const expectedPath = './test/expectations/example-skip-prefix/style.css';
 	const opts = {
-		stylesheetPath: './build/example-skip-prefix/',
-		spritePath: './build/example-skip-prefix/',
+		stylesheetPath: './test/build/example-skip-prefix/',
+		spritePath: './test/build/example-skip-prefix/',
 		hooks: {
 			onSaveSpritesheet: (opts, groups) => {
 	            return path.join(opts.spritePath, 'shapes.png');
