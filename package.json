@@ -1,5 +1,5 @@
 {
-  "name": "postcss-sprites",
+  "name": "@niksy/postcss-sprites",
   "version": "4.2.1",
   "description": "Generate spritesheets from stylesheets",
   "main": "lib/index.js",
@@ -54,5 +54,8 @@
   },
   "ava": {
     "babel": true
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

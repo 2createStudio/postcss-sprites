@@ -12,7 +12,7 @@
 
 ```javascript
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('@niksy/postcss-sprites');
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',

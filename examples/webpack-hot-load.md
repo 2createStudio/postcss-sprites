@@ -10,7 +10,7 @@ If you want to hot load image assets as they are introduced or edited, you can c
 ```js
 var path = require('path');
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('@niksy/postcss-sprites');
 var revHash = require('rev-hash');
 
 module.exports = function loadPostcssPlugins() {
