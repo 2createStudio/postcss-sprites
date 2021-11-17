@@ -17,11 +17,12 @@
     "test": "ava test/*.js --verbose --serial",
     "build": "babel src/ --out-dir lib/",
     "watch": "babel --watch src/ --out-dir lib/",
-    "prepublishOnly": "npm run build && npm test",
-    "pretest": "npm run build"
+    "prepublishOnly": "npm run build",
+    "pretest": "npm run build",
+    "release": "np"
   },
   "repository": "niksy/postcss-sprites",
-  "author": "niksy",
+  "author": "2createStudio",
   "license": "MIT",
   "bugs": "https://github.com/niksy/postcss-sprites/issues",
   "homepage": "https://github.com/niksy/postcss-sprites#readme",
@@ -30,6 +31,7 @@
     "@babel/cli": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "ava": "^3.15.0",
+    "np": "^6.5.0",
     "postcss": "^8.1.2"
   },
   "dependencies": {
