@@ -1,4 +1,4 @@
-# postcss-sprites [![Build Status](https://github.com/niksy/postcss-sprites/workflows/CI/badge.svg?branch=postcss-8-support)](https://github.com/niksy/postcss-sprites/actions?query=workflow%3ACI) [![npm version](https://badge.fury.io/js/postcss-sprites.svg)](https://badge.fury.io/js/postcss-sprites)
+# postcss-sprites [![Build Status](https://github.com/niksy/postcss-sprites/workflows/CI/badge.svg?branch=postcss-8-support)](https://github.com/niksy/postcss-sprites/actions?query=workflow%3ACI) [![npm version](https://badge.fury.io/js/@niksy%2Fpostcss-sprites.svg)](https://badge.fury.io/js/@niksy%2Fpostcss-sprites)
 
 > [PostCSS](https://github.com/postcss/postcss) plugin that generates spritesheets from your stylesheets.
 
