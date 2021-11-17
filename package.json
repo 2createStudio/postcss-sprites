@@ -20,11 +20,11 @@
     "prepublishOnly": "npm run build && npm test",
     "pretest": "npm run build"
   },
-  "repository": "2createStudio/postcss-sprites",
-  "author": "2createStudio",
+  "repository": "niksy/postcss-sprites",
+  "author": "niksy",
   "license": "MIT",
-  "bugs": "https://github.com/2createStudio/postcss-sprites/issues",
-  "homepage": "https://github.com/2createStudio/postcss-sprites#readme",
+  "bugs": "https://github.com/niksy/postcss-sprites/issues",
+  "homepage": "https://github.com/niksy/postcss-sprites#readme",
   "devDependencies": {
     "@ava/babel": "^2.0.0",
     "@babel/cli": "^7.16.0",

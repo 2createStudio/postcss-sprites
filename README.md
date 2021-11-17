@@ -265,7 +265,7 @@ Every filter or group function will be called with an ``Image`` object.
 Pull requests are welcome.
 
 ```
-$ git clone git@github.com:2createStudio/postcss-sprites.git
+$ git clone git@github.com:niksy/postcss-sprites.git
 $ npm install
 $ npm run watch
 ```
