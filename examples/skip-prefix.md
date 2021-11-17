@@ -13,7 +13,7 @@ There [used to be a `skipPrefix` plugin option](https://github.com/2createStudio
 ```js
 var path = require('path');
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('@niksy/postcss-sprites');
 var opts = {
 	stylesheetPath: './css',
 	spritePath: './css/images/',

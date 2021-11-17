@@ -10,7 +10,7 @@
 
 ```javascript
 var postcss = require('postcss');
-var sprites = require('postcss-sprites');
+var sprites = require('@niksy/postcss-sprites');
 var updateRule = require('postcss-sprites/lib/core').updateRule;
 var opts = {
 	stylesheetPath: './css',

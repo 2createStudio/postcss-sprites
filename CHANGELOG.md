@@ -1,5 +1,12 @@
 # Change Log
 
+## [5.0.0] - 2021-11-08
+### Changed
+- Support PostCSS >= 8
+- Support Node >= 12
+- Dependencies upgrade
+- Default export is now inside `default` (follows default Babel implementation)
+
 ## [4.2.1] - 2017-02-07
 ### Fixed
 - Preserve source of original declarations - See #90

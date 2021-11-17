@@ -1,7 +1,6 @@
 import test from 'ava';
 import postcss from 'postcss';
 import _ from 'lodash';
-import Promise from 'bluebird';
 import fs from 'fs-extra';
 import {
 	defaults,
@@ -14,20 +13,18 @@ import {
 	updateRule
 } from '../lib/core';
 
-const readFileAsync = Promise.promisify(fs.readFile);
-
 test.beforeEach((t) => {
 	t.context.opts = _.merge({ logger() {} }, defaults);
 });
 
 test('should update CSS declarations', async (t) => {
-	const input = await readFileAsync('./fixtures/basic/style.css');
-	const expected = await readFileAsync('./expectations/basic/style.css', 'utf8');
-	const ast = postcss.parse(input, { from: './fixtures/basic/style.css' });
+	const input = await fs.readFile('./test/fixtures/basic/style.css');
+	const expected = await fs.readFile('./test/expectations/basic/style.css', 'utf8');
+	const ast = postcss.parse(input, { from: './test/fixtures/basic/style.css' });
 	let images, spritesheets, opts, root;
 
-	t.context.opts.spritePath = './build/basic';
-	t.context.opts.stylesheetPath = './build/basic';
+	t.context.opts.spritePath = './test/build/basic';
+	t.context.opts.stylesheetPath = './test/build/basic';
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
@@ -40,12 +37,12 @@ test('should update CSS declarations', async (t) => {
 });
 
 test('should update CSS declarations with relative paths', async (t) => {
-	const input = await readFileAsync('./fixtures/relative/style.css');
-	const expected = await readFileAsync('./expectations/relative/style.css', 'utf8');
-	const ast = postcss.parse(input, { from: './fixtures/relative/style.css' });
+	const input = await fs.readFile('./test/fixtures/relative/style.css');
+	const expected = await fs.readFile('./test/expectations/relative/style.css', 'utf8');
+	const ast = postcss.parse(input, { from: './test/fixtures/relative/style.css' });
 	let images, spritesheets, opts, root;
 
-	t.context.opts.spritePath = './build/relative';
+	t.context.opts.spritePath = './test/build/relative';
 
 	[ opts, images ] = await extractImages(ast, t.context.opts);
 	[ root, opts, images ] = await setTokens(ast, t.context.opts, images);
@@ -58,13 +55,13 @@ test('should update CSS declarations with relative paths', async (t) => {
 });
 
 test('should use function provided by onUpdateRule hook', async (t) => {
-	const input = await readFileAsync('./fixtures/basic/style.css');
-	const expected = await readFileAsync('./expectations/basic-on-update-rule-hook/style.css', 'utf8');
-	const ast = postcss.parse(input, { from: './fixtures/basic/style.css' });
+	const input = await fs.readFile('./test/fixtures/basic/style.css');
+	const expected = await fs.readFile('./test/expectations/basic-on-update-rule-hook/style.css', 'utf8');
+	const ast = postcss.parse(input, { from: './test/fixtures/basic/style.css' });
 	let images, spritesheets, opts, root;
 
-	t.context.opts.spritePath = './build/basic-on-update-rule-hook';
-	t.context.opts.stylesheetPath = './build/basic-on-update-rule-hook';
+	t.context.opts.spritePath = './test/build/basic-on-update-rule-hook';
+	t.context.opts.stylesheetPath = './test/build/basic-on-update-rule-hook';
 	t.context.opts.hooks.onUpdateRule = (rule, commentNode, image) => {
 		const backgroundColorDecl = postcss.decl({
 			prop: 'background-color',

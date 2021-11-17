@@ -1,8 +1,5 @@
 {
 	"presets": [
-		["es2015", { "loose": true }]
-	],
-	"plugins": [
-		"add-module-exports"
+		["@babel/preset-env", { "loose": true, "targets": { "node": "12" } }]
 	]
 }

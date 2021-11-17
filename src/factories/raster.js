@@ -1,5 +1,5 @@
 import Spritesmith from 'spritesmith';
-import Promise from 'bluebird';
+import { promisify } from 'util';
 import _ from 'lodash';
 
 /**
@@ -27,7 +27,7 @@ export default function run(opts, images) {
 		}
 	}
 
-	return Promise.promisify(Spritesmith.run, { context: Spritesmith })(config)
+	return promisify(Spritesmith.run.bind(Spritesmith))(config)
 		.then((spritesheet) => {
 			spritesheet.extension = 'png';
 

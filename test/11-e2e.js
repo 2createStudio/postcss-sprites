@@ -1,15 +1,12 @@
 import test from 'ava';
 import postcss from 'postcss';
 import fs from 'fs-extra';
-import Promise from 'bluebird';
 import path from 'path';
 import plugin from '../lib';
 
-Promise.promisifyAll(fs);
-
 async function run(inputPath, expectedPath, opts, t) {
-	const input = await fs.readFileAsync(inputPath, 'utf8');
-	const expected = await fs.readFileAsync(expectedPath, 'utf8');
+	const input = await fs.readFile(inputPath, 'utf8');
+	const expected = await fs.readFile(expectedPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 	const result = await processor.process(input, { from: inputPath });
 
@@ -17,46 +14,46 @@ async function run(inputPath, expectedPath, opts, t) {
 }
 
 test('throws error', async (t) => {
-	const inputPath = './fixtures/error/style.css';
+	const inputPath = './test/fixtures/error/style.css';
 	const opts = {
-		stylesheetPath: './build/example-error/',
-		spritePath: './build/example-error/',
+		stylesheetPath: './test/build/example-error/',
+		spritePath: './test/build/example-error/',
 	};
 
-	const input = await fs.readFileAsync(inputPath, 'utf8');
+	const input = await fs.readFile(inputPath, 'utf8');
 	const processor = postcss([plugin(opts)]);
 
-	t.throws(processor.process(input, { from: inputPath }));
+	return t.throwsAsync(() => processor.process(input, { from: inputPath }));
 });
 
 test('basic', async (t) => {
-	const inputPath = './fixtures/basic/style.css';
-	const expectedPath = './expectations/basic/style.css';
+	const inputPath = './test/fixtures/basic/style.css';
+	const expectedPath = './test/expectations/basic/style.css';
 	const opts = {
-		stylesheetPath: './build/basic/',
-		spritePath: './build/basic/'
+		stylesheetPath: './test/build/basic/',
+		spritePath: './test/build/basic/'
 	};
 
 	return run(inputPath, expectedPath, opts, t);
 });
 
 test('basic SVG', async (t) => {
-	const inputPath = './fixtures/svg-basic/style.css';
-	const expectedPath = './expectations/svg-basic/style.css';
+	const inputPath = './test/fixtures/svg-basic/style.css';
+	const expectedPath = './test/expectations/svg-basic/style.css';
 	const opts = {
-		stylesheetPath: './build/svg-basic/',
-		spritePath: './build/svg-basic/'
+		stylesheetPath: './test/build/svg-basic/',
+		spritePath: './test/build/svg-basic/'
 	};
 
 	return run(inputPath, expectedPath, opts, t);
 });
 
 test('retina', async (t) => {
-	const inputPath = './fixtures/retina/style.css';
-	const expectedPath = './expectations/retina/style.css';
+	const inputPath = './test/fixtures/retina/style.css';
+	const expectedPath = './test/expectations/retina/style.css';
 	const opts = {
-		stylesheetPath: './build/retina/',
-		spritePath: './build/retina/',
+		stylesheetPath: './test/build/retina/',
+		spritePath: './test/build/retina/',
 		retina: true
 	};
 
@@ -64,44 +61,44 @@ test('retina', async (t) => {
 });
 
 test('color', async (t) => {
-	const inputPath = './fixtures/color/style.css';
-	const expectedPath = './expectations/color/style.css';
+	const inputPath = './test/fixtures/color/style.css';
+	const expectedPath = './test/expectations/color/style.css';
 	const opts = {
-		stylesheetPath: './build/color/',
-		spritePath: './build/color/'
+		stylesheetPath: './test/build/color/',
+		spritePath: './test/build/color/'
 	};
 
 	return run(inputPath, expectedPath, opts, t);
 });
 
 test('absolute path', async (t) => {
-	const inputPath = './fixtures/absolute/css/style.css';
-	const expectedPath = './expectations/absolute/style.css';
+	const inputPath = './test/fixtures/absolute/css/style.css';
+	const expectedPath = './test/expectations/absolute/style.css';
 	const opts = {
-		basePath: './fixtures/absolute/',
-		stylesheetPath: './build/absolute/',
-		spritePath: './build/absolute/'
+		basePath: './test/fixtures/absolute/',
+		stylesheetPath: './test/build/absolute/',
+		spritePath: './test/build/absolute/'
 	};
 
 	return run(inputPath, expectedPath, opts, t);
 });
 
 test('relative path', async (t) => {
-	const inputPath = './fixtures/relative/style.css';
-	const expectedPath = './expectations/relative/style.css';
+	const inputPath = './test/fixtures/relative/style.css';
+	const expectedPath = './test/expectations/relative/style.css';
 	const opts = {
-		spritePath: './build/relative/'
+		spritePath: './test/build/relative/'
 	};
 
 	return run(inputPath, expectedPath, opts, t);
 });
 
 test('filter by', async (t) => {
-	const inputPath = './fixtures/filter-by/style.css';
-	const expectedPath = './expectations/filter-by/style.css';
+	const inputPath = './test/fixtures/filter-by/style.css';
+	const expectedPath = './test/expectations/filter-by/style.css';
 	const opts = {
-		stylesheetPath: './build/filter-by/',
-		spritePath: './build/filter-by/',
+		stylesheetPath: './test/build/filter-by/',
+		spritePath: './test/build/filter-by/',
 		filterBy: (image) => {
 			if (image.url.indexOf('square') === -1) {
 				return Promise.reject();
@@ -115,11 +112,11 @@ test('filter by', async (t) => {
 });
 
 test('group by', async (t) => {
-	const inputPath = './fixtures/group-by/style.css';
-	const expectedPath = './expectations/group-by/style.css';
+	const inputPath = './test/fixtures/group-by/style.css';
+	const expectedPath = './test/expectations/group-by/style.css';
 	const opts = {
-		stylesheetPath: './build/group-by/',
-		spritePath: './build/group-by/',
+		stylesheetPath: './test/build/group-by/',
+		spritePath: './test/build/group-by/',
 		groupBy: (image) => {
 			if (image.url.indexOf('square') === -1 && image.url.indexOf('circle') === -1) {
 				return Promise.reject();
@@ -133,14 +130,14 @@ test('group by', async (t) => {
 });
 
 test('hooks', async (t) => {
-	const inputPath = './fixtures/hooks/style.css';
-	const expectedPath = './expectations/hooks/style.css';
+	const inputPath = './test/fixtures/hooks/style.css';
+	const expectedPath = './test/expectations/hooks/style.css';
 	const opts = {
-		stylesheetPath: './build/hooks/',
-		spritePath: './build/hooks/',
+		stylesheetPath: './test/build/hooks/',
+		spritePath: './test/build/hooks/',
 		hooks: {
-			onSaveSpritesheet: (opts, groups) => {
-				return path.join(opts.spritePath, ['shapes', ...groups, 'png'].join('.'));
+			onSaveSpritesheet: (opts, spritesheet) => {
+				return path.join(opts.spritePath, ['shapes', ...spritesheet.groups, 'png'].join('.'));
 			},
 			onUpdateRule: (rule, token, image) => {
 				rule.insertAfter(token, postcss.decl({
